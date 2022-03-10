@@ -1,3 +1,3 @@
-# jeremy-collins.github.io/distracted_driver_detection
+# jeremy-collins.github.io
 
 - this is a test
