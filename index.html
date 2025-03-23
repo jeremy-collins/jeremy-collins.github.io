@@ -6,558 +6,552 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
-
-  <!-- Inline CSS improvements -->
-  <style type="text/css">
+  <style>
+    /* Global Styles */
     body, td, th {
       font-family: 'Titillium Web', Verdana, Helvetica, sans-serif;
       font-size: 16px;
-      font-weight: 400;
       margin: 0;
       padding: 0;
-      background-color: #fff; /* Changed from gray (#f8f8f8) to white */
+      background-color: #fff;
     }
-    a {
-      color: #1772d0;
-      text-decoration: none;
+    .wrapper {
+      max-width: 1000px;
+      width: 90%;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
     }
-    a:hover, a:focus {
-      color: #f09228;
+    
+    /* Header & Navigation */
+    header {
+      text-align: center;
+      margin-bottom: 30px;
     }
-    /* Custom tags */
-    pageheading {
+    header h1 {
       font-size: 38px;
       font-weight: 400;
-      display: block;
-      text-align: center;
       margin-bottom: 20px;
     }
-    heading {
-      font-size: 17px;
-      font-weight: 600;
+    .nav-links {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
     }
-    sectionheading {
-      font-size: 22px;
+    .nav-links li {
+      display: inline;
+    }
+    .nav-links a {
+      color: #fff;
+      background-color: #333333;
+      text-decoration: none;
       font-weight: 600;
-      display: block;
-      margin: 20px 0 10px 0;
+      padding: 8px 16px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .nav-links a:hover {
+      background-color: #000;
+    }
+    .icon {
+      margin-right: 5px;
+    }
+    
+    /* Accent Link Styling for Paper & Website Links */
+    .link-accent {
+      text-decoration: none;
+      color: #1772d0;
+      transition: color 0.3s ease;
+    }
+    .link-accent:hover {
+      color: #f09228;
+    }
+    
+    /* Main Content Sections */
+    main section {
+      margin-bottom: 40px;
+    }
+    main section h2 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 10px;
+    }
+    
+    /* About Section */
+    #about p {
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    
+    /* Publication & Project Cards */
+    .publication,
+    .project {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      padding: 15px;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15);
+    }
+    .publication .media,
+    .project .media {
+      flex: 1 1 40%;
+      margin-right: 20px;
+      text-align: center;
+    }
+    .pub-details,
+    .proj-details {
+      flex: 1 1 55%;
+    }
+    .publication h3,
+    .project h3 {
+      font-size: 20px;
+      margin: 0 0 10px 0;
+    }
+    .publication-description,
+    .project-description {
+      font-style: italic;
+      color: #555;
+      margin-top: 10px;
     }
     .img-rounded {
       border-radius: 15px;
       max-width: 100%;
       height: auto;
     }
-    /* Main wrapper with fixed width */
-    .wrapper {
-      width: 1000px;
-      margin: 0 auto;
-      background-color: #fff;
-      padding: 20px;
-    }
-    /* Table layout for content sections */
-    .content-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 30px;
-    }
-    .content-table td {
-      vertical-align: top;
-      padding: 15px;
-    }
-    .media {
+    
+    /* Education Cards */
+    .education-card {
+      display: flex;
+      align-items: center;
       margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15);
     }
-    .media img {
-      float: left;
+    .education-card img {
       margin-right: 15px;
     }
-    .footer {
+    .edu-details h3 {
+      margin: 0 0 5px 0;
+      font-size: 20px;
+    }
+    
+    /* Experience Cards */
+    .experience-card {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #ffffff;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15);
+    }
+    .experience-logo {
+      width: 80px;
+      margin-right: 15px;
+    }
+    .exp-details h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+    .exp-details p {
+      margin: 5px 0 0 0;
+    }
+    
+    /* Footer */
+    footer {
       text-align: center;
       font-size: 14px;
-      margin-top: 30px;
-      padding: 10px;
       color: #666;
+      margin-top: 40px;
+      padding: 20px;
+      border-top: 1px solid #ddd;
     }
-    /* Simple navigation styling */
-    .nav-links {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .nav-links a {
-      margin: 0 10px;
-    }
-    table {
-      width: 100%;
-    }
-    /* Icon styling */
-    .icon {
-      margin-right: 5px;
-    }
-    /* Publication description placeholder */
-    .publication-description {
-      font-style: italic;
-      color: #555;
-      margin-top: 10px;
-    }
-    /* Project description placeholder */
-    .project-description {
-      font-style: italic;
-      color: #555;
-      margin-top: 10px;
-    }
-    /* Experience section styling */
-    .experience-card {
-      background-color: #f1f1f1;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-    }
-    .experience-card a {
-      font-weight: 600;
-      color: #1772d0;
-    }
-    .experience-card p {
-      margin: 5px 0;
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .publication, .project {
+        flex-direction: column;
+      }
+      .publication .media, .project .media {
+        margin-right: 0;
+        margin-bottom: 15px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="wrapper">
     <!-- Header Section -->
-    <table border="0" align="center" cellpadding="20" cellspacing="0">
-      <tr>
-        <td align="center">
-          <pageheading>Jeremy Collins</pageheading>
-          <img src="images/headshot.jpg" alt="Jeremy Collins" class="img-rounded" width="300" height="300">
-          <p>
-            <a href="cv.pdf" target="_blank"><i class="fa-solid fa-file-pdf icon"></i>CV/Resume</a> |
-            <a href="https://scholar.google.com/citations?user=uxsLx-0AAAAJ&hl=en" target="_blank"><i class="fa-solid fa-graduation-cap icon"></i>Google Scholar</a> |
-            <a href="https://github.com/jeremy-collins" target="_blank"><i class="fa-brands fa-github icon"></i>GitHub</a> |
-            <a href="mailto:jacollins1999@gmail.com"><i class="fa-solid fa-envelope icon"></i>Email</a> |
-            <a href="https://arrangr.com/jer" target="_blank"><i class="fa-solid fa-handshake icon"></i>Meet with me</a>
-          </p>
-        </td>
-      </tr>
-    </table>
-
-    <!-- Navigation (commented out) -->
-    <!--
-    <div class="nav-links">
-      <a href="#about">Home</a> |
-      <a href="#publications">Publications</a> |
-      <a href="#projects">Projects</a> |
-      <a href="#education">Education</a> |
-      <a href="#experience">Experience</a>
-    </div>
-    -->
-
-    <!-- About Section -->
-    <table border="0" cellpadding="20" cellspacing="0">
-      <tr>
-        <td id="about" style="text-align:justify;">
-          <p>
-            Hey! I'm Jeremy, and I'm a Machine Learning PhD student at 
-            <a href="https://ml.gatech.edu/" target="_blank">Georgia Tech</a> advised by 
-            <a href="https://animesh.garg.tech/" target="_blank">Animesh Garg</a>. I obtained my MS in Robotics at 
-            <a href="https://research.gatech.edu/robotics" target="_blank">Georgia Tech</a> under 
-            <a href="https://charliekemp.com/" target="_blank">Charlie Kemp</a>, and I have a BS from the 
-            <a href="https://mechanical-engineering.uark.edu/" target="_blank">University of Arkansas</a>, where I worked with 
-            <a href="https://bme.gatech.edu/bme/faculty/Yue-Chen" target="_blank">Yue Chen</a>.
-          </p>
-          <p>
-            My research interests are in deep learning applied to robotics. I am particularly interested in video understanding, visuomotor control, and robotics at scale.
-          </p>
-        </td>
-      </tr>
-    </table>
-
-    <!-- Publications Section -->
-    <table border="0" cellpadding="20" cellspacing="0">
-      <tr>
-        <td id="publications">
-          <sectionheading>Publications</sectionheading>
-          
-          <!-- Publication 1: RoCoDA -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <a href="images/causal_data_augmentation.mp4" target="_blank">
-                  <video src="images/causal_data_augmentation.mp4" width="90%" autoplay muted loop></video>
-                </a>
-              </td>
-              <td style="width:70%;">
-                <p><heading>RoCoDA: Counterfactual Data Augmentation for Data-Efficient Robot Learning from Demonstrations</heading></p>
-                <p>
-                  Ezra Ameperosa, Jeremy A Collins, Mrinal Jain, Animesh Garg<br>
-                  <strong>ICRA 2025</strong><br>
-                  <a href="https://arxiv.org/abs/2411.16959" target="_blank">Paper</a> |
-                  <a href="https://rocoda.github.io/" target="_blank">Website</a>
-                </p>
-                <p class="publication-description">RoCoDA is a data augmentation framework unifying the concepts of invariance, equivariance, and causality to enhance data augmentation for imitation learning, thus improving generalization and sample efficiency across manipulation tasks.</p>
-              </td>
-            </tr>
-          </table>
-          
-          <!-- Publication 2: DexMOTS -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <a href="images/dexmots.png" target="_blank">
-                  <img src="images/dexmots.png" width="90%" alt="" class="img-rounded">
-                </a>
-              </td>
-              <td style="width:70%;">
-                <p><heading>DexMOTS: Dexterous Manipulation with Differentiable Simulation</heading></p>
-                <p>
-                  Krishnan Srinivasan, Jeremy A Collins, Eric Heiden, Ian Ng, Jeannette Bohg, Animesh Garg<br>
-                  <strong>ISRR 2024</strong><br>
-                  <a href="https://www.dropbox.com/scl/fi/ndigild3mjfjo3snvdezs/Warp_Benchmarks_ISRR_.pdf?rlkey=se1e0darflulkoa26lrkrlaoh&st=7ew4opp8&dl=0" target="_blank">Paper</a>
-                </p>
-                <p class="publication-description">DEXMOTS leverages object-centric motion trajectories and differentiable simulation to efficiently learn dexterous manipulation policies, improving policy performance in contact-rich tasks.</p>
-              </td>
-            </tr>
-          </table>
-          
-          <!-- Publication 3: ForceSight -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <a href="images/forcesight_tasks_cropped.mp4" target="_blank">
-                  <video src="images/forcesight_tasks_cropped.mp4" width="90%" autoplay muted loop></video>
-                </a>
-              </td>
-              <td style="width:70%;">
-                <p><heading>ForceSight: Text-Guided Mobile Manipulation with Visual-Force Goals</heading></p>
-                <p>
-                  Jeremy A Collins, Cody Houff, You Liang Tan, Charles C Kemp<br>
-                  <strong>ICRA 2024, Demoed at CoRL 2023</strong><br>
-                  <a href="https://arxiv.org/abs/2309.12312" target="_blank">Paper</a> | 
-                  <a href="https://force-sight.github.io/" target="_blank">Website</a> | 
-                  <a href="https://youtu.be/TKCg90tnMgI" target="_blank">Video</a>
-                </p>
-                <p class="publication-description">ForceSight is an RGBD-adapted, text-conditioned vision transformer. Given an RGBD image and a text prompt, ForceSight produces visual-force goals for a mobile manipulator, and successfully generalizes to novel environments and unseen object instances.</p>
-              </td>
-            </tr>
-          </table>
-          
-          <!-- Publication 4: Visual Contact Pressure Estimation -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <a href="images/viper.mp4" target="_blank">
-                  <video src="images/viper.mp4" width="90%" autoplay muted loop></video>
-                </a>
-              </td>
-              <td style="width:70%;">
-                <p><heading>Visual Contact Pressure Estimation for Grippers in the Wild</heading></p>
-                <p>
-                  Jeremy A Collins, Cody Houff, Patrick Grady, Charles C Kemp<br>
-                  <strong>IROS 2023</strong><br>
-                  <a href="https://arxiv.org/abs/2303.07344" target="_blank">Paper</a> | 
-                  <a href="https://youtu.be/z5Rttv1oZJA" target="_blank">Video</a>
-                </p>
-                <p class="publication-description">ViPER is a model that leverages multiple sources of data to visually estimate contact pressure on robotic grippers, enabling precise manipulation in varied, uncontrolled environments.</p>
-              </td>
-            </tr>
-          </table>
-          
-          <!-- Publication 5: PressureVision++ -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <a href="images/pressurevision++.mp4" target="_blank">
-                  <video src="images/pressurevision++.mp4" width="90%" autoplay muted loop></video>
-                </a>
-              </td>
-              <td style="width:70%;">
-                <p><heading>PressureVision++: Estimating Fingertip Pressure from Diverse RGB Images</heading></p>
-                <p>
-                  Patrick Grady, Jeremy A Collins, Chengcheng Tang, Christopher D Twigg, James Hays, Charles C Kemp<br>
-                  <strong>WACV 2024, Demoed at CVPR 2023</strong><br>
-                  <a href="https://arxiv.org/abs/2301.02310" target="_blank">Paper</a> | 
-                  <a href="https://pressurevision.github.io/" target="_blank">Website</a> | 
-                  <a href="https://www.youtube.com/watch?v=MPHPIWfp7Bg" target="_blank">Video</a>
-                </p>
-                <p class="publication-description">PressureVision++ visually estimates fingertip pressure using weak supervision and adversarial domain adaptation, enabling mixed reality interfaces with everyday surfaces.</p>
-              </td>
-            </tr>
-          </table>
-          
-          <!-- Publication 6: Force/Torque Sensing for Soft Grippers -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <a href="images/vfts.mp4" target="_blank">
-                  <video src="images/vfts.mp4" width="90%" autoplay muted loop></video>
-                </a>
-              </td>
-              <td style="width:70%;">
-                <p><heading>Force/Torque Sensing for Soft Grippers using an External Camera</heading></p>
-                <p>
-                  Jeremy A Collins, Patrick Grady, Charles C Kemp<br>
-                  <strong>ICRA 2023</strong><br>
-                  <a href="https://arxiv.org/abs/2210.00051" target="_blank">Paper</a> | 
-                  <a href="https://github.com/Healthcare-Robotics/visual-force-torque" target="_blank">Code</a> | 
-                  <a href="https://youtu.be/x0V3p6EUj1s" target="_blank">Video</a>
-                </p>
-                <p class="publication-description">VFTS is a deep learning approach that uses a wrist-mounted camera to visually estimate 6-axis force and torque on robotic grippers.</p>
-              </td>
-            </tr>
-          </table>
-          
-          <!-- Publication 7: Visual Pressure Estimation and Control -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <a href="images/vpec.mp4" target="_blank">
-                  <video src="images/vpec.mp4" width="90%" autoplay muted loop></video>
-                </a>
-              </td>
-              <td style="width:70%;">
-                <p><heading>Visual Pressure Estimation and Control for Soft Robotic Grippers</heading></p>
-                <p>
-                  Patrick Grady, Jeremy A Collins, Samarth Brahmbhatt, Christopher D Twigg, Chengcheng Tang, James Hays, Charles C Kemp<br>
-                  <strong>IROS 2022</strong><br>
-                  <a href="https://arxiv.org/abs/2204.07268" target="_blank">Paper</a> | 
-                  <a href="https://github.com/Healthcare-Robotics/VPEC" target="_blank">Code</a> | 
-                  <a href="https://youtu.be/Zq95PLdSy2M" target="_blank">Video</a>
-                </p>
-                <p class="publication-description">VPEC is a model that infers and controls the pressure applied by soft robotic grippers using a single RGB image, enabling precise manipulation of small objects such as coins and microSD cards.</p>
-              </td>
-            </tr>
-          </table>
-          
-          <!-- Publication 8: Tendon-Driven Soft Robotic Gripper for Blackberry Harvesting -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <a href="images/berrygripper.mp4" target="_blank">
-                  <video src="images/berrygripper.mp4" width="90%" autoplay muted loop></video>
-                </a>
-              </td>
-              <td style="width:70%;">
-                <p><heading>Tendon-Driven Soft Robotic Gripper for Blackberry Harvesting</heading></p>
-                <p>
-                  Anthony L Gunderman, Jeremy A Collins, Andrea L Myers, Renee T Threlfall, Yue Chen<br>
-                  <strong>RA-L 2022</strong><br>
-                  <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9684953&tag=1" target="_blank">Paper</a>
-                </p>
-                <p class="publication-description">We develop a tendon-driven soft robotic gripper with active force feedback that gently harvests blackberries, minimizing postharvest damage.</p>
-              </td>
-            </tr>
-          </table>
-          
-        </td>
-      </tr>
-    </table>
-
-    <!-- Projects Section -->
-    <table border="0" cellpadding="20" cellspacing="0">
-      <tr>
-        <td id="projects">
-          <sectionheading>Selected Personal Projects</sectionheading>
-          
-          <!-- Project 1: Video Prediction Using Stable Diffusion -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <iframe width="100%" height="200" src="https://www.youtube.com/embed/vNO1lKaUIAo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-              </td>
-              <td style="width:70%;">
-                <p><heading>Video Prediction Using Stable Diffusion</heading></p>
-                <p>
-                  <a href="https://github.com/jeremy-collins/sd-video-gen" target="_blank">Code</a> | 
-                  <a href="https://www.youtube.com/watch?v=vNO1lKaUIAo" target="_blank">Video</a>
-                </p>
-                <p class="project-description">Trained a video prediction model that autoregressively predicts and then denoises embeddings from Stable Diffusion.</p>
-              </td>
-            </tr>
-          </table>
-          
-          <!-- Project 2: Learning Robotic Tasks from Video Demonstration -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <iframe width="100%" height="200" src="https://www.youtube.com/embed/KbrXWbp9Awc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-              </td>
-              <td style="width:70%;">
-                <p><heading>Learning Robotic Tasks from Video Demonstrations</heading></p>
-                <p>
-                  <a href="https://github.com/jeremy-collins/vroom" target="_blank">Code</a> | 
-                  <a href="https://youtu.be/KbrXWbp9Awc" target="_blank">Video</a>
-                </p>
-                <p class="project-description">We use visual data to learn a control policy for a robotic arm by observing expert video demonstrations. We implement and test several models, accomplishing an 85% success rate for a pick-and-place task.</p>
-              </td>
-            </tr>
-          </table>
-          
-          <!-- Project 3: Distracted Driver Detection -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <iframe width="100%" height="200" src="https://www.youtube.com/embed/pGFJq_m8jy4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-              </td>
-              <td style="width:70%;">
-                <p><heading>Distracted Driver Detection</heading></p>
-                <p>
-                  <a href="https://github.com/jeremy-collins/distracted_driver_detection" target="_blank">Code</a> | 
-                  <a href="https://youtu.be/pGFJq_m8jy4" target="_blank">Video</a>
-                </p>
-                <p class="project-description">Created a model that visually classifies driver behavior in real-time.</p>
-              </td>
-            </tr>
-          </table>
-          
-          <!-- Project 4: Midnight Stretch: A Semi-Autonomous Robotic Caregiver -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <iframe width="100%" height="200" src="https://www.youtube.com/embed/yqKOwHO42N4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-              </td>
-              <td style="width:70%;">
-                <p><heading>Midnight Stretch: A Semi-Autonomous Robotic Caregiver</heading></p>
-                <p>
-                  <a href="http://github.com/jeremy-collins/midnight_stretch" target="_blank">Code</a> | 
-                  <a href="https://www.youtube.com/watch?v=yqKOwHO42N4" target="_blank">Video</a>
-                </p>
-                <p class="project-description">Midnight Stretch is a robotic system that autonomously detects falls in older adults. Features include motion detection, voice activation, and a web interface for video calls.</p>
-              </td>
-            </tr>
-          </table>
-          
-          <!-- Project 5: Vision-Based Robotic Navigation -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <iframe width="100%" height="200" src="https://www.youtube.com/embed/ootf95ItPhk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-              </td>
-              <td style="width:70%;">
-                <p><heading>Vision-Based Robotic Navigation</heading></p>
-                <p>
-                  <a href="https://youtu.be/ootf95ItPhk" target="_blank">Video</a>
-                </p>
-                <p class="project-description">Made an algorithm that enables a mobile robot to detect and follow objects, avoid obstacles, and navigate a maze.</p>
-              </td>
-            </tr>
-          </table>
-          
-          <!-- Project 6: CuberBot -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <iframe width="100%" height="200" src="https://www.youtube.com/embed/KdxoiUJjvdk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-              </td>
-              <td style="width:70%;">
-                <p><heading>CuberBot</heading></p>
-                <p>
-                  <a href="https://github.com/jeremy-collins/CuberBot" target="_blank">Code</a> | 
-                  <a href="https://youtu.be/KdxoiUJjvdk" target="_blank">Video</a>
-                </p>
-                <p class="project-description">Created robotic hands with tendon-actuated fingers to autonomously solve a Rubik's cube.</p>
-              </td>
-            </tr>
-          </table>
-          
-          <!-- Project 7: Fractal Generation -->
-          <table class="content-table" border="0">
-            <tr>
-              <td style="width:45%; text-align:center;">
-                <a href="images/fractal_gif.gif" target="_blank">
-                  <img src="images/fractal_gif.gif" width="100%" alt="" class="img">
-                </a>
-              </td>
-              <td style="width:67%;">
-                <p><heading>Fractal Generation</heading></p>
-                <p>
-                  <a href="https://github.com/jeremy-collins/fractal_generation" target="_blank">Code</a>
-                </p>
-                <p class="project-description">I made this to get some intuition for recursion. Did you know that the "B." in Benoit B. Mandelbrot stands for Benoit B. Mandelbrot?</p>
-              </td>
-            </tr>
-          </table>
-          
-        </td>
-      </tr>
-    </table>
-
-    <!-- Education Section -->
-    <table border="0" cellpadding="20" cellspacing="0">
-      <tr>
-        <td id="education" style="text-align:justify;">
-          <sectionheading>Education</sectionheading>
-          <!-- Georgia Tech (PhD) -->
+    <header>
+      <h1>Jeremy Collins</h1>
+      <img src="images/headshot.jpg" alt="Jeremy Collins" class="img-rounded" width="300" height="300">
+      <nav>
+        <ul class="nav-links">
+          <li><a href="cv.pdf" target="_blank"><i class="fa-solid fa-file-pdf icon"></i>Resume</a></li>
+          <li><a href="https://scholar.google.com/citations?user=uxsLx-0AAAAJ&hl=en" target="_blank"><i class="fa-solid fa-graduation-cap icon"></i>Google Scholar</a></li>
+          <li><a href="https://github.com/jeremy-collins" target="_blank"><i class="fa-brands fa-github icon"></i>GitHub</a></li>
+          <li><a href="mailto:jacollins1999@gmail.com"><i class="fa-solid fa-envelope icon"></i>Email</a></li>
+          <li><a href="https://arrangr.com/jer" target="_blank"><i class="fa-solid fa-handshake icon"></i>Meet with me</a></li>
+        </ul>
+      </nav>
+    </header>
+    
+    <!-- Main Content -->
+    <main>
+      <!-- About Section -->
+      <section id="about">
+        <p>
+          Hey! I'm Jeremy, and I'm a Machine Learning PhD student at 
+          <a class="link-accent" href="https://ml.gatech.edu/" target="_blank">Georgia Tech</a> advised by 
+          <a class="link-accent" href="https://animesh.garg.tech/" target="_blank">Animesh Garg</a>.
+        </p>
+        <p>
+          <strong>My research focuses on scaling robot learning by harnessing diverse sources of data.</strong> Specifically, I'm leveraging internet-scale human videos, designing efficient data augmentation algorithms, and building accessible platforms for large-scale teleoperation, with the goal of enabling robots to generalize to new tasks and environments and operate reliably in the real world.
+        </p>
+      </section>
+      
+      <!-- Publications Section -->
+      <section id="publications">
+        <h2>Publications</h2>
+        <!-- Publication 1 -->
+        <article class="publication">
           <div class="media">
-            <img src="images/gt_logo.png" alt="Georgia Tech" width="96" height="72">
-            <p>
-              <strong>Georgia Institute of Technology</strong><br>
-              Aug. 2023 - Present<br>
-              Ph.D. in Machine Learning
-            </p>
-            <div style="clear:both;"></div>
+            <a href="images/causal_data_augmentation.mp4" target="_blank">
+              <video src="images/causal_data_augmentation.mp4" width="90%" autoplay muted loop></video>
+            </a>
           </div>
-          <!-- Georgia Tech (MS) -->
+          <div class="pub-details">
+            <h3>RoCoDA: Counterfactual Data Augmentation for Data-Efficient Robot Learning from Demonstrations</h3>
+            <p>
+              Ezra Ameperosa, Jeremy A Collins, Mrinal Jain, Animesh Garg<br>
+              <strong>ICRA 2025</strong><br>
+              <a class="link-accent" href="https://arxiv.org/abs/2411.16959" target="_blank">Paper</a> |
+              <a class="link-accent" href="https://rocoda.github.io/" target="_blank">Website</a>
+            </p>
+            <p class="publication-description">RoCoDA is a data augmentation framework unifying the concepts of invariance, equivariance, and causality to enhance data augmentation for imitation learning, thus improving generalization and sample efficiency across manipulation tasks.</p>
+          </div>
+        </article>
+        <!-- Publication 2 -->
+        <article class="publication">
           <div class="media">
-            <img src="images/gt_logo.png" alt="Georgia Tech" width="96" height="72">
-            <p>
-              <strong>Georgia Institute of Technology</strong><br>
-              Aug. 2021 - May 2023<br>
-              M.S. in Robotics | GPA: 4.00
-            </p>
-            <div style="clear:both;"></div>
+            <a href="images/dexmots.png" target="_blank">
+              <img src="images/dexmots.png" alt="DexMOTS" class="img-rounded" width="90%">
+            </a>
           </div>
-          <!-- University of Arkansas -->
+          <div class="pub-details">
+            <h3>DexMOTS: Dexterous Manipulation with Differentiable Simulation</h3>
+            <p>
+              Krishnan Srinivasan, Jeremy A Collins, Eric Heiden, Ian Ng, Jeannette Bohg, Animesh Garg<br>
+              <strong>ISRR 2024</strong><br>
+              <a class="link-accent" href="https://www.dropbox.com/scl/fi/ndigild3mjfjo3snvdezs/Warp_Benchmarks_ISRR_.pdf?rlkey=se1e0darflulkoa26lrkrlaoh&st=7ew4opp8&dl=0" target="_blank">Paper</a>
+            </p>
+            <p class="publication-description">DexMOTS leverages object-centric motion trajectories and differentiable simulation to efficiently learn dexterous manipulation policies, improving policy performance in contact-rich tasks.</p>
+          </div>
+        </article>
+        <!-- Publication 3 -->
+        <article class="publication">
           <div class="media">
-            <img src="images/uark_logo.jpg" alt="University of Arkansas" width="96" height="96">
-            <p>
-              <strong>University of Arkansas</strong><br>
-              Aug. 2017 - May 2021<br>
-              B.S. in Mechanical Engineering, Minor in Mathematics | GPA: 4.00
-            </p>
-            <div style="clear:both;"></div>
+            <a href="images/forcesight_tasks_cropped.mp4" target="_blank">
+              <video src="images/forcesight_tasks_cropped.mp4" width="90%" autoplay muted loop></video>
+            </a>
           </div>
-        </td>
-      </tr>
-    </table>
-
-    <!-- Experience Section -->
-    <table border="0" cellpadding="20" cellspacing="0">
-      <tr>
-        <td id="experience" style="text-align:justify;">
-          <sectionheading>Experience</sectionheading>
-          <div class="experience-card">
-            <a href="https://www.eleuther.ai/" target="_blank">Eleuther AI</a><br>
+          <div class="pub-details">
+            <h3>ForceSight: Text-Guided Mobile Manipulation with Visual-Force Goals</h3>
+            <p>
+              Jeremy A Collins, Cody Houff, You Liang Tan, Charles C Kemp<br>
+              <strong>ICRA 2024, CoRL 2023 Demo</strong><br>
+              <a class="link-accent" href="https://arxiv.org/abs/2309.12312" target="_blank">Paper</a> |
+              <a class="link-accent" href="https://force-sight.github.io/" target="_blank">Website</a> |
+              <a class="link-accent" href="https://youtu.be/TKCg90tnMgI" target="_blank">Video</a>
+            </p>
+            <p class="publication-description">ForceSight is an RGBD-adapted, text-conditioned vision transformer. Given an RGBD image and a text prompt, ForceSight produces visual-force goals for a mobile manipulator, and successfully generalizes to novel environments and unseen object instances.</p>
+          </div>
+        </article>
+        <!-- Publication 4 -->
+        <article class="publication">
+          <div class="media">
+            <a href="images/viper.mp4" target="_blank">
+              <video src="images/viper.mp4" width="90%" autoplay muted loop></video>
+            </a>
+          </div>
+          <div class="pub-details">
+            <h3>Visual Contact Pressure Estimation for Grippers in the Wild</h3>
+            <p>
+              Jeremy A Collins, Cody Houff, Patrick Grady, Charles C Kemp<br>
+              <strong>IROS 2023</strong><br>
+              <a class="link-accent" href="https://arxiv.org/abs/2303.07344" target="_blank">Paper</a> |
+              <a class="link-accent" href="https://youtu.be/z5Rttv1oZJA" target="_blank">Video</a>
+            </p>
+            <p class="publication-description">ViPER is a model that leverages multiple sources of data to visually estimate contact pressure on robotic grippers, enabling precise manipulation in varied, uncontrolled environments.</p>
+          </div>
+        </article>
+        <!-- Publication 5 -->
+        <article class="publication">
+          <div class="media">
+            <a href="images/pressurevision++.mp4" target="_blank">
+              <video src="images/pressurevision++.mp4" width="90%" autoplay muted loop></video>
+            </a>
+          </div>
+          <div class="pub-details">
+            <h3>PressureVision++: Estimating Fingertip Pressure from Diverse RGB Images</h3>
+            <p>
+              Patrick Grady, Jeremy A Collins, Chengcheng Tang, Christopher D Twigg, James Hays, Charles C Kemp<br>
+              <strong>WACV 2024, CVPR 2023 Demo</strong><br>
+              <a class="link-accent" href="https://arxiv.org/abs/2301.02310" target="_blank">Paper</a> |
+              <a class="link-accent" href="https://pressurevision.github.io/" target="_blank">Website</a> |
+              <a class="link-accent" href="https://www.youtube.com/watch?v=MPHPIWfp7Bg" target="_blank">Video</a>
+            </p>
+            <p class="publication-description">PressureVision++ visually estimates fingertip contact pressure using weak supervision and adversarial domain adaptation, enabling mixed reality interfaces with everyday surfaces.</p>
+          </div>
+        </article>
+        <!-- Publication 6 -->
+        <article class="publication">
+          <div class="media">
+            <a href="images/vfts.mp4" target="_blank">
+              <video src="images/vfts.mp4" width="90%" autoplay muted loop></video>
+            </a>
+          </div>
+          <div class="pub-details">
+            <h3>Force/Torque Sensing for Soft Grippers using an External Camera</h3>
+            <p>
+              Jeremy A Collins, Patrick Grady, Charles C Kemp<br>
+              <strong>ICRA 2023</strong><br>
+              <a class="link-accent" href="https://arxiv.org/abs/2210.00051" target="_blank">Paper</a> |
+              <a class="link-accent" href="https://github.com/Healthcare-Robotics/visual-force-torque" target="_blank">Code</a> |
+              <a class="link-accent" href="https://youtu.be/x0V3p6EUj1s" target="_blank">Video</a>
+            </p>
+            <p class="publication-description">VFTS is a deep learning approach that uses a wrist-mounted camera to visually estimate 6-axis force and torque on robotic grippers.</p>
+          </div>
+        </article>
+        <!-- Publication 7 -->
+        <article class="publication">
+          <div class="media">
+            <a href="images/vpec.mp4" target="_blank">
+              <video src="images/vpec.mp4" width="90%" autoplay muted loop></video>
+            </a>
+          </div>
+          <div class="pub-details">
+            <h3>Visual Pressure Estimation and Control for Soft Robotic Grippers</h3>
+            <p>
+              Patrick Grady, Jeremy A Collins, Samarth Brahmbhatt, Christopher D Twigg, Chengcheng Tang, James Hays, Charles C Kemp<br>
+              <strong>IROS 2022</strong><br>
+              <a class="link-accent" href="https://arxiv.org/abs/2204.07268" target="_blank">Paper</a> |
+              <a class="link-accent" href="https://github.com/Healthcare-Robotics/VPEC" target="_blank">Code</a> |
+              <a class="link-accent" href="https://youtu.be/Zq95PLdSy2M" target="_blank">Video</a>
+            </p>
+            <p class="publication-description">VPEC is a model that infers and controls the pressure applied by soft robotic grippers using a single RGB image, enabling precise manipulation of small objects such as coins and microSD cards.</p>
+          </div>
+        </article>
+        <!-- Publication 8 -->
+        <article class="publication">
+          <div class="media">
+            <a href="images/berrygripper.mp4" target="_blank">
+              <video src="images/berrygripper.mp4" width="90%" autoplay muted loop></video>
+            </a>
+          </div>
+          <div class="pub-details">
+            <h3>Tendon-Driven Soft Robotic Gripper for Blackberry Harvesting</h3>
+            <p>
+              Anthony L Gunderman, Jeremy A Collins, Andrea L Myers, Renee T Threlfall, Yue Chen<br>
+              <strong>RA-L 2022</strong><br>
+              <a class="link-accent" href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9684953&tag=1" target="_blank">Paper</a>
+            </p>
+            <p class="publication-description">We develop a tendon-driven soft robotic gripper with active force feedback that gently harvests blackberries, minimizing postharvest damage.</p>
+          </div>
+        </article>
+      </section>
+      
+      <!-- Projects Section -->
+      <section id="projects">
+        <h2>Selected Personal Projects</h2>
+        <!-- Project 1 -->
+        <article class="project">
+          <div class="media">
+            <iframe width="100%" height="200" src="https://www.youtube.com/embed/vNO1lKaUIAo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="proj-details">
+            <h3>Video Prediction Using Stable Diffusion</h3>
+            <p>
+              <a class="link-accent" href="https://github.com/jeremy-collins/sd-video-gen" target="_blank">Code</a> |
+              <a class="link-accent" href="https://www.youtube.com/watch?v=vNO1lKaUIAo" target="_blank">Video</a>
+            </p>
+            <p class="project-description">Trained a video prediction model that autoregressively predicts and then denoises embeddings from Stable Diffusion.</p>
+          </div>
+        </article>
+        <!-- Project 2 -->
+        <article class="project">
+          <div class="media">
+            <iframe width="100%" height="200" src="https://www.youtube.com/embed/KbrXWbp9Awc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="proj-details">
+            <h3>Learning Robotic Tasks from Video Demonstrations</h3>
+            <p>
+              <a class="link-accent" href="https://github.com/jeremy-collins/vroom" target="_blank">Code</a> |
+              <a class="link-accent" href="https://youtu.be/KbrXWbp9Awc" target="_blank">Video</a>
+            </p>
+            <p class="project-description">Implemented several models to learn a control policy from expert video demonstrations, achieving an 85% success rate in pick-and-place tasks.</p>
+          </div>
+        </article>
+        <!-- Project 3 -->
+        <article class="project">
+          <div class="media">
+            <iframe width="100%" height="200" src="https://www.youtube.com/embed/pGFJq_m8jy4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="proj-details">
+            <h3>Distracted Driver Detection</h3>
+            <p>
+              <a class="link-accent" href="https://github.com/jeremy-collins/distracted_driver_detection" target="_blank">Code</a> |
+              <a class="link-accent" href="https://youtu.be/pGFJq_m8jy4" target="_blank">Video</a>
+            </p>
+            <p class="project-description">Created a model that visually classifies driver behavior in real-time.</p>
+          </div>
+        </article>
+        <!-- Project 4 -->
+        <article class="project">
+          <div class="media">
+            <iframe width="100%" height="200" src="https://www.youtube.com/embed/yqKOwHO42N4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="proj-details">
+            <h3>Midnight Stretch: A Semi-Autonomous Robotic Caregiver</h3>
+            <p>
+              <a class="link-accent" href="http://github.com/jeremy-collins/midnight_stretch" target="_blank">Code</a> |
+              <a class="link-accent" href="https://www.youtube.com/watch?v=yqKOwHO42N4" target="_blank">Video</a>
+            </p>
+            <p class="project-description">Midnight Stretch is a robotic system that autonomously detects falls in older adults. Features include human motion detection, voice activation, and a web interface for video calls.</p>
+          </div>
+        </article>
+        <!-- Project 5 -->
+        <article class="project">
+          <div class="media">
+            <iframe width="100%" height="200" src="https://www.youtube.com/embed/ootf95ItPhk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="proj-details">
+            <h3>Vision-Based Robotic Navigation</h3>
+            <p>
+              <a class="link-accent" href="https://youtu.be/ootf95ItPhk" target="_blank">Video</a>
+            </p>
+            <p class="project-description">Developed an algorithm enabling a mobile robot to detect and follow objects, avoid obstacles, and navigate complex environments.</p>
+          </div>
+        </article>
+        <!-- Project 6 -->
+        <article class="project">
+          <div class="media">
+            <iframe width="100%" height="200" src="https://www.youtube.com/embed/KdxoiUJjvdk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="proj-details">
+            <h3>CuberBot</h3>
+            <p>
+              <a class="link-accent" href="https://github.com/jeremy-collins/CuberBot" target="_blank">Code</a> |
+              <a class="link-accent" href="https://youtu.be/KdxoiUJjvdk" target="_blank">Video</a>
+            </p>
+            <p class="project-description">Designed robotic hands with tendon-actuated fingers to autonomously solve a Rubik's cube.</p>
+          </div>
+        </article>
+        <!-- Project 7 -->
+        <article class="project">
+          <div class="media">
+            <a href="images/fractal_gif.gif" target="_blank">
+              <img src="images/fractal_gif.gif" alt="Fractal Generation" class="img-rounded" width="100%">
+            </a>
+          </div>
+          <div class="proj-details">
+            <h3>Fractal Generation</h3>
+            <p>
+              <a class="link-accent" href="https://github.com/jeremy-collins/fractal_generation" target="_blank">Code</a>
+            </p>
+            <p class="project-description">I made this to get some intuition for recursion. Did you know the "B." in Benoit B. Mandelbrot stands for Benoit B. Mandelbrot?</p>
+          </div>
+        </article>
+      </section>
+      
+      <!-- Education Section -->
+      <section id="education">
+        <h2>Education</h2>
+        <article class="education-card">
+          <img src="images/gt_logo.png" alt="Georgia Tech" width="96" height="72">
+          <div class="edu-details">
+            <h3>Georgia Institute of Technology</h3>
+            <p>Aug. 2023 - Present<br>Ph.D. in Machine Learning</p>
+          </div>
+        </article>
+        <article class="education-card">
+          <img src="images/gt_logo.png" alt="Georgia Tech" width="96" height="72">
+          <div class="edu-details">
+            <h3>Georgia Institute of Technology</h3>
+            <p>Aug. 2021 - May 2023<br>M.S. in Robotics | GPA: 4.00</p>
+          </div>
+        </article>
+        <article class="education-card">
+          <img src="images/uark_logo.jpg" alt="University of Arkansas" width="96" height="96">
+          <div class="edu-details">
+            <h3>University of Arkansas</h3>
+            <p>Aug. 2017 - May 2021<br>B.S. in Mechanical Engineering, Minor in Mathematics | GPA: 4.00</p>
+          </div>
+        </article>
+      </section>
+      
+      <!-- Experience Section -->
+      <section id="experience">
+        <h2>Experience</h2>
+        <article class="experience-card">
+          <img src="images/tri_logo.png" alt="Toyota Research Institute" class="experience-logo">
+          <div class="exp-details">
+            <h3><a class="link-accent" href="https://www.tri.global/our-work/robotics" target="_blank">Toyota Research Institute</a></h3>
+            <p>Intern, Large Behavior Models Team (Incoming Summer 2025)</p>
+          </div>
+        </article>
+        <article class="experience-card">
+          <img src="images/eleuther_ai_logo.svg" alt="Eleuther AI" class="experience-logo">
+          <div class="exp-details">
+            <h3><a class="link-accent" href="https://www.eleuther.ai/" target="_blank">Eleuther AI</a></h3>
             <p>Volunteer Researcher (May 2023 - Aug. 2023)</p>
           </div>
-          <div class="experience-card">
-            <a href="https://www.dorabot.com" target="_blank">Dorabot, Inc.</a><br>
+        </article>
+        <article class="experience-card">
+          <img src="images/dorabot_logo.jpg" alt="Dorabot, Inc." class="experience-logo">
+          <div class="exp-details">
+            <h3><a class="link-accent" href="https://www.dorabot.com" target="_blank">Dorabot, Inc.</a></h3>
             <p>Engineering Intern (Jul. 2021 - May 2022)</p>
           </div>
-          <div class="experience-card">
-            <a href="https://www.marshalltown.com/" target="_blank">Marshalltown Company</a><br>
+        </article>
+        <article class="experience-card">
+          <img src="images/marshalltown_logo.jpg" alt="Marshalltown Company" class="experience-logo">
+          <div class="exp-details">
+            <h3><a class="link-accent" href="https://www.marshalltown.com/" target="_blank">Marshalltown Company</a></h3>
             <p>Mechanical Engineering Intern (May 2019 - Aug. 2019)</p>
           </div>
-          <div class="experience-card">
-            <a href="https://www.jbhunt.com" target="_blank">J.B. Hunt Transport Services, Inc.</a><br>
+        </article>
+        <article class="experience-card">
+          <img src="images/jbhunt_logo.png" alt="J.B. Hunt Transport Services, Inc." class="experience-logo">
+          <div class="exp-details">
+            <h3><a class="link-accent" href="https://www.jbhunt.com" target="_blank">J.B. Hunt Transport Services, Inc.</a></h3>
             <p>Application Development Intern (May 2018 - Aug. 2018)</p>
           </div>
-          <div class="experience-card">
-            <a href="https://www.davoice.net/" target="_blank">DaVoice</a><br>
+        </article>
+        <article class="experience-card">
+          <img src="images/davoice_logo.jpg" alt="DaVoice" class="experience-logo">
+          <div class="exp-details">
+            <h3><a class="link-accent" href="https://www.davoice.net/" target="_blank">DaVoice</a></h3>
             <p>Quality Control and Logistics (May 2015 - Aug. 2017)</p>
           </div>
-        </td>
-      </tr>
-    </table>
-
+        </article>
+      </section>
+    </main>
+    
     <!-- Footer Section -->
-    <table border="0" align="center" cellpadding="20" cellspacing="0">
-      <tr>
-        <td class="footer">
-          <p>"...the actual contents of minds are tremendously, irredeemably complex; we should stop trying to find simple ways to think about the contents of minds, such as simple ways to think about space, objects, multiple agents, or symmetries... We want AI agents that can discover like we can, not which contain what we have discovered. Building in our discoveries only makes it harder to see how the discovering process can be done." <br> - Rich Sutton</p>
-        </td>
-      </tr>
-    </table>
+    <footer>
+      <p>"...the actual contents of minds are tremendously, irredeemably complex; we should stop trying to find simple ways to think about the contents of minds, such as simple ways to think about space, objects, multiple agents, or symmetries... We want AI agents that can discover like we can, not which contain what we have discovered. Building in our discoveries only makes it harder to see how the discovering process can be done."<br> - Rich Sutton</p>
+    </footer>
     
   </div>
 </body>
