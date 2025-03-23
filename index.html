@@ -684,6 +684,20 @@
           }
         }
       }
+
+      // initialize grid with a glider
+      function initializeGlider() {
+        grid = createGrid();
+        // find a good position in the middle area
+        const centerRow = Math.floor(rows / 2);
+        const centerCol = Math.floor(cols / 2);
+        // add a glider pattern
+        grid[centerRow][centerCol+1] = 1;
+        grid[centerRow+1][centerCol+2] = 1;
+        grid[centerRow+2][centerCol] = 1;
+        grid[centerRow+2][centerCol+1] = 1;
+        grid[centerRow+2][centerCol+2] = 1;
+      }
       
       // Clear the grid
       function clearGrid() {
@@ -879,6 +893,7 @@
       // Start the game
       resizeCanvas();
     //   randomizeGrid();
+      initializeGlider();
       gameLoop();
     });
   </script>
