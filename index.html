@@ -2,31 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Jeremy Collins</title>
+  <title>Jeremy Collins - With Game of Life Background</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
   <style>
     /* Global Styles */
-    body, td, th {
-      font-family: 'Titillium Web', Verdana, Helvetica, sans-serif;
-      font-size: 16px;
+    body {
       margin: 0;
       padding: 0;
+      position: relative;
+      font-family: 'Titillium Web', Verdana, Helvetica, sans-serif;
+      overflow-x: hidden;
       background-color: #fff;
     }
+    
+    /* Game of Life Background Styles */
+    #game-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background-color: #f8f9fa;
+    }
+    
+    /* Content Wrapper */
     .wrapper {
       max-width: 1000px;
       width: 90%;
       margin: 0 auto;
       padding: 20px;
-      background-color: #fff;
+      background-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 1;
+      margin-top: 20px;
+      margin-bottom: 20px;
     }
     
     /* Header & Navigation */
     header {
       text-align: center;
       margin-bottom: 30px;
+      background-color: rgba(255, 255, 255, 0.5);
+      padding: 15px;
+      border-radius: 10px;
     }
     header h1 {
       font-size: 38px;
@@ -40,6 +62,7 @@
       display: flex;
       justify-content: center;
       gap: 20px;
+      flex-wrap: wrap;
     }
     .nav-links li {
       display: inline;
@@ -73,6 +96,9 @@
     /* Main Content Sections */
     main section {
       margin-bottom: 40px;
+      background-color: rgba(255, 255, 255, 0.5);
+      padding: 20px;
+      border-radius: 10px;
     }
     main section h2 {
       font-size: 28px;
@@ -98,6 +124,7 @@
       border: 1px solid #eee;
       border-radius: 8px;
       box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15);
+      background-color: #fff;
     }
     .publication .media,
     .project .media {
@@ -135,6 +162,7 @@
       border: 1px solid #eee;
       border-radius: 8px;
       box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15);
+      background-color: #fff;
     }
     .education-card img {
       margin-right: 15px;
@@ -167,6 +195,33 @@
       margin: 5px 0 0 0;
     }
     
+    /* Game controls */
+    .game-controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .game-controls button {
+      margin: 0 5px;
+      padding: 8px 12px;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .game-controls button:hover {
+      background-color: #555;
+    }
+    
     /* Footer */
     footer {
       text-align: center;
@@ -175,6 +230,8 @@
       margin-top: 40px;
       padding: 20px;
       border-top: 1px solid #ddd;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
     }
     
     /* Responsive adjustments */
@@ -186,10 +243,27 @@
         margin-right: 0;
         margin-bottom: 15px;
       }
+      .game-controls {
+        bottom: 10px;
+        right: 10px;
+        padding: 5px;
+      }
+      .game-controls button {
+        padding: 5px 8px;
+        font-size: 12px;
+      }
     }
   </style>
 </head>
 <body>
+  <canvas id="game-canvas"></canvas>
+  
+  <div class="game-controls">
+    <button id="play-pause">Pause</button>
+    <button id="clear">Clear</button>
+    <button id="random">Random</button>
+    <button id="glider">Add Glider</button>
+  </div>
   <div class="wrapper">
     <!-- Header Section -->
     <header>
@@ -554,5 +628,258 @@
     </footer>
     
   </div>
+  <script>
+    // Game of Life implementation
+    document.addEventListener('DOMContentLoaded', function() {
+      const canvas = document.getElementById('game-canvas');
+      const ctx = canvas.getContext('2d');
+      const playPauseButton = document.getElementById('play-pause');
+      const clearButton = document.getElementById('clear');
+      const randomButton = document.getElementById('random');
+      const gliderButton = document.getElementById('glider');
+      
+      // Set canvas size to match the window
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        // Use larger cells for better visibility
+        cellSize = Math.max(15, Math.min(canvas.width, canvas.height) / 60);
+        cols = Math.floor(canvas.width / cellSize);
+        rows = Math.floor(canvas.height / cellSize);
+        
+        console.log(`Canvas: ${canvas.width}x${canvas.height}, Grid: ${cols}x${rows}, Cell size: ${cellSize}`);
+        
+        // Initialize grid if it's the first resize
+        if (!grid) {
+          grid = createGrid();
+        } else {
+          // Preserve the existing grid pattern as much as possible
+          const oldGrid = grid;
+          grid = createGrid();
+          
+          // Copy the old grid to the new one
+          const minCols = Math.min(oldGrid[0].length, cols);
+          const minRows = Math.min(oldGrid.length, rows);
+          
+          for (let i = 0; i < minRows; i++) {
+            for (let j = 0; j < minCols; j++) {
+              grid[i][j] = oldGrid[i][j];
+            }
+          }
+        }
+      }
+
+      // Create a new grid
+      function createGrid() {
+        return Array(rows).fill().map(() => Array(cols).fill(0));
+      }
+
+      // Fill grid with random values
+      function randomizeGrid() {
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            grid[i][j] = Math.random() > 0.8 ? 1 : 0;
+          }
+        }
+      }
+      
+      // Clear the grid
+      function clearGrid() {
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            grid[i][j] = 0;
+          }
+        }
+      }
+
+      // Draw the grid
+      function drawGrid() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            const x = j * cellSize;
+            const y = i * cellSize;
+            
+            if (grid[i][j] === 1) {
+              // Alive cells are vibrant blue
+            //   ctx.fillStyle = '#1772d0';
+              ctx.fillStyle = '#DDDDDD';
+              ctx.fillRect(x, y, cellSize - 1, cellSize - 1);
+            } else {
+              // Dead cells are very transparent
+              ctx.fillStyle = 'rgba(248, 249, 250, 0.05)';
+              ctx.fillRect(x, y, cellSize - 1, cellSize - 1);
+              ctx.strokeStyle = 'rgba(233, 236, 239, 0.5)';
+              ctx.strokeRect(x, y, cellSize - 1, cellSize - 1);
+            }
+          }
+        }
+      }
+
+      // Update the grid according to Game of Life rules
+      function updateGrid() {
+        const nextGrid = createGrid();
+        
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            const state = grid[i][j];
+            let neighbors = 0;
+            
+            // Count neighbors (including wrapping around edges)
+            for (let di = -1; di <= 1; di++) {
+              for (let dj = -1; dj <= 1; dj++) {
+                if (di === 0 && dj === 0) continue;
+                
+                const ni = (i + di + rows) % rows;
+                const nj = (j + dj + cols) % cols;
+                
+                neighbors += grid[ni][nj];
+              }
+            }
+            
+            // Apply Game of Life rules
+            if (state === 0 && neighbors === 3) {
+              nextGrid[i][j] = 1; // Birth
+            } else if (state === 1 && (neighbors < 2 || neighbors > 3)) {
+              nextGrid[i][j] = 0; // Death
+            } else {
+              nextGrid[i][j] = state; // Maintain state
+            }
+          }
+        }
+        
+        grid = nextGrid;
+      }
+
+      // Game loop
+        let frameCount = 0;
+        const updateInterval = 3; // Higher number = slower updates
+
+        function gameLoop() {
+        frameCount++;
+
+        // Only update grid occasionally
+        if (isRunning && frameCount % updateInterval === 0) {
+        updateGrid();
+        }
+
+        drawGrid();
+        requestAnimationFrame(gameLoop);
+        }
+
+      // Convert mouse coordinates to grid cell
+      function getCellFromMouse(clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        
+        // Calculate the exact position relative to the canvas
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        
+        const mouseX = (clientX - rect.left) * scaleX;
+        const mouseY = (clientY - rect.top) * scaleY;
+        
+        const col = Math.floor(mouseX / cellSize);
+        const row = Math.floor(mouseY / cellSize);
+        
+        return { row, col };
+      }
+      
+      // Function to add life at a specific cell and its surroundings
+      function addLifeAt(row, col, size = 1) {
+        for (let i = -size; i <= size; i++) {
+          for (let j = -size; j <= size; j++) {
+            const newRow = row + i;
+            const newCol = col + j;
+            
+            // Check bounds
+            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+              grid[newRow][newCol] = 1;  // Set to alive
+            }
+          }
+        }
+      }
+
+      // Global mouse tracking for drawing regardless of what element is under the cursor
+      let lastCell = { row: -1, col: -1 };
+      let isMouseDown = false;
+      
+      // Track mouse down state globally
+      document.addEventListener('mousedown', function(event) {
+        isMouseDown = true;
+        
+        // Draw at the current location
+        const { row, col } = getCellFromMouse(event.clientX, event.clientY);
+        if (row >= 0 && row < rows && col >= 0 && col < cols) {
+          addLifeAt(row, col);
+          lastCell = { row, col };
+        }
+      });
+      
+      // Listen for mouse moves globally 
+        document.addEventListener('mousemove', function(event) {
+        // Only draw when mouse button is down (no hover activation)
+        if (isMouseDown) {
+            const { row, col } = getCellFromMouse(event.clientX, event.clientY);
+            
+            // Only add life if moving to a new cell
+            if (row >= 0 && row < rows && col >= 0 && col < cols && 
+                (lastCell.row !== row || lastCell.col !== col)) {
+            
+            // Add life with larger pattern when dragging
+            addLifeAt(row, col, 1); // 3x3 pattern when dragging
+            
+            // Update last cell
+            lastCell = { row, col };
+            }
+        }
+        });
+      
+      // Stop drawing on mouse up globally
+      document.addEventListener('mouseup', function() {
+        isMouseDown = false;
+      });
+
+      // Control buttons
+      playPauseButton.addEventListener('click', function() {
+        isRunning = !isRunning;
+        playPauseButton.textContent = isRunning ? 'Pause' : 'Play';
+      });
+
+      clearButton.addEventListener('click', clearGrid);
+
+      randomButton.addEventListener('click', randomizeGrid);
+      
+      // Add a glider to the grid
+      gliderButton.addEventListener('click', function() {
+        // Find a good position in the middle area
+        const centerRow = Math.floor(rows / 2);
+        const centerCol = Math.floor(cols / 2);
+        
+        // Add a glider pattern
+        // This creates a classic "glider" pattern that moves diagonally
+        grid[centerRow][centerCol+1] = 1;
+        grid[centerRow+1][centerCol+2] = 1;
+        grid[centerRow+2][centerCol] = 1;
+        grid[centerRow+2][centerCol+1] = 1;
+        grid[centerRow+2][centerCol+2] = 1;
+      });
+
+      // Handle window resize
+      window.addEventListener('resize', resizeCanvas);
+
+      // Initialize variables
+      let cellSize = 15;  // Larger default cell size
+      let cols, rows;
+      let grid;
+      let isRunning = true;
+      
+      // Start the game
+      resizeCanvas();
+    //   randomizeGrid();
+      gameLoop();
+    });
+  </script>
 </body>
 </html>
