@@ -46,7 +46,7 @@
     /* Header & Navigation */
     header {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
       background-color: rgba(255, 255, 255, 0.5);
       padding: 15px;
       border-radius: 10px;
@@ -96,7 +96,7 @@
     
     /* Main Content Sections */
     main section {
-      margin-bottom: 40px;
+      margin-bottom: 0px;
       background-color: rgba(255, 255, 255, 0.5);
       padding: 20px;
       border-radius: 10px;
@@ -120,6 +120,7 @@
     .project {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       margin-bottom: 30px;
       padding: 15px;
       border: 1px solid #eee;
@@ -298,7 +299,41 @@
       <!-- Publications Section -->
       <section id="publications">
         <h2>Publications</h2>
-        <!-- Publication 1 -->
+        <article class="publication">
+          <div class="media">
+            <a href="images/amplify_headliner.mp4" target="_blank">
+              <video src="images/amplify_headliner.mp4" width="90%" autoplay muted loop></video>
+            </a>
+          </div>
+          <div class="pub-details">
+            <h3>AMPLIFY: Actionless Motion Priors for Robot Learning from Videos</h3>
+            <p>
+              Jeremy A Collins*, Loránd Cheng*, Kunal Aneja, Albert Wilcox, Benjamin Joffe, Animesh Garg<br>
+              <strong>In submission</strong><br>
+              <a class="link-accent" href="https://www.dropbox.com/scl/fi/lvc50g9iwf6wqjg6m7a7a/AMPLIFY_CoRL_2025.pdf?rlkey=1yhr6jlwiucbvht6bv1n6ou48&st=xcna4moe&dl=0" target="_blank">Paper</a> |
+              <a class="link-accent" href="https://amplify-robotics.github.io/" target="_blank">Website</a>
+            </p>
+            <p class="publication-description">AMPLIFY is a novel framework that leverages large-scale video data by encoding visual dynamics into compact, discrete motion tokens derived from keypoint trajectories. Our modular approach decouples the challenges of learning <strong>what</strong> motion defines a task from <strong>how</strong> robots can perform it.</p>
+          </div>
+        </article>
+        <article class="publication">
+            <div class="media">
+              <!-- <a href="images/cobalt_sys_arch.png" target="images/cobalt_sys_arch.png"> -->
+                <img src="images/cobalt_sys_arch.png" alt="COBALT" width="90%">
+                <!-- <video src="images/amplify_headliner.mp4" width="90%" autoplay muted loop></video> -->
+              </a>
+            </div>
+            <div class="pub-details">
+              <h3>COBALT: Crowdsourcing Robot Learning via Cloud-Based Teleoperation with Smartphones</h3>
+              <p>
+                Ayush Agarwal*, Ansh Gandhi*, Jeremy A Collins, Omar Rayyan, Aryan Sarswat, Ranjani Koushik, Kaavya Menon, Masoud Moghani, Ajay Mandlekar, Animesh Garg<br>
+                <strong>In submission</strong><br>
+                <a class="link-accent" href="https://www.dropbox.com/scl/fi/lb8ohy5oje6cj7lv6suam/Distributed_Teleop_CoRL_2025.pdf?rlkey=3qaeqcczflvr62k4iyv6wmgsx&st=ut1xeup7&dl=0" target="_blank">Paper</a> |
+                <a class="link-accent" href="https://cobalt-teleop.github.io/" target="_blank">Website</a>
+              </p>
+              <p class="publication-description">COBALT democratizes robot learning by letting hundreds of users worldwide teleoperate cloud‐hosted, vectorized simulators via everyday devices while a suite of metrics and a structured training curriculum ensure the collection of large, high-quality datasets for both simulated and real-world robots.</p>
+            </div>
+          </article>
         <article class="publication">
           <div class="media">
             <a href="images/causal_data_augmentation.mp4" target="_blank">
@@ -308,15 +343,15 @@
           <div class="pub-details">
             <h3>RoCoDA: Counterfactual Data Augmentation for Data-Efficient Robot Learning from Demonstrations</h3>
             <p>
-              Ezra Ameperosa, Jeremy A Collins, Mrinal Jain, Animesh Garg<br>
+              Ezra Ameperosa*, Jeremy A Collins*, Mrinal Jain, Animesh Garg<br>
               <strong>ICRA 2025</strong><br>
               <a class="link-accent" href="https://arxiv.org/abs/2411.16959" target="_blank">Paper</a> |
+                <a class="link-accent" href="https://pypi.org/project/rocoda/" target="_blank">Code</a> |
               <a class="link-accent" href="https://rocoda.github.io/" target="_blank">Website</a>
             </p>
             <p class="publication-description">RoCoDA is a data augmentation framework unifying the concepts of invariance, equivariance, and causality to enhance data augmentation for imitation learning, thus improving generalization and sample efficiency across manipulation tasks.</p>
           </div>
         </article>
-        <!-- Publication 2 -->
         <article class="publication">
           <div class="media">
             <a href="images/dexmots.png" target="_blank">
@@ -333,7 +368,6 @@
             <p class="publication-description">DexMOTS leverages object-centric motion trajectories and differentiable simulation to efficiently learn dexterous manipulation policies, improving policy performance in contact-rich tasks.</p>
           </div>
         </article>
-        <!-- Publication 3 -->
         <article class="publication">
           <div class="media">
             <a href="images/forcesight_tasks_cropped.mp4" target="_blank">
@@ -343,7 +377,7 @@
           <div class="pub-details">
             <h3>ForceSight: Text-Guided Mobile Manipulation with Visual-Force Goals</h3>
             <p>
-              Jeremy A Collins, Cody Houff, You Liang Tan, Charles C Kemp<br>
+              Jeremy A Collins*, Cody Houff*, You Liang Tan*, Charles C Kemp<br>
               <strong>ICRA 2024, CoRL 2023 Demo</strong><br>
               <a class="link-accent" href="https://arxiv.org/abs/2309.12312" target="_blank">Paper</a> |
               <a class="link-accent" href="https://force-sight.github.io/" target="_blank">Website</a> |
@@ -352,7 +386,6 @@
             <p class="publication-description">ForceSight is an RGBD-adapted, text-conditioned vision transformer. Given an RGBD image and a text prompt, ForceSight produces visual-force goals for a mobile manipulator, and successfully generalizes to novel environments and unseen object instances.</p>
           </div>
         </article>
-        <!-- Publication 4 -->
         <article class="publication">
           <div class="media">
             <a href="images/viper.mp4" target="_blank">
@@ -370,7 +403,6 @@
             <p class="publication-description">ViPER is a model that leverages multiple sources of data to visually estimate contact pressure on robotic grippers, enabling precise manipulation in varied, uncontrolled environments.</p>
           </div>
         </article>
-        <!-- Publication 5 -->
         <article class="publication">
           <div class="media">
             <a href="images/pressurevision++.mp4" target="_blank">
@@ -389,7 +421,6 @@
             <p class="publication-description">PressureVision++ visually estimates fingertip contact pressure using weak supervision and adversarial domain adaptation, enabling mixed reality interfaces with everyday surfaces.</p>
           </div>
         </article>
-        <!-- Publication 6 -->
         <article class="publication">
           <div class="media">
             <a href="images/vfts.mp4" target="_blank">
@@ -408,7 +439,6 @@
             <p class="publication-description">VFTS is a deep learning approach that uses a wrist-mounted camera to visually estimate 6-axis force and torque on robotic grippers.</p>
           </div>
         </article>
-        <!-- Publication 7 -->
         <article class="publication">
           <div class="media">
             <a href="images/vpec.mp4" target="_blank">
@@ -427,7 +457,6 @@
             <p class="publication-description">VPEC is a model that infers and controls the pressure applied by soft robotic grippers using a single RGB image, enabling precise manipulation of small objects such as coins and microSD cards.</p>
           </div>
         </article>
-        <!-- Publication 8 -->
         <article class="publication">
           <div class="media">
             <a href="images/berrygripper.mp4" target="_blank">
@@ -582,7 +611,7 @@
           <img src="images/tri_logo.png" alt="Toyota Research Institute" class="experience-logo">
           <div class="exp-details">
             <h3><a class="link-accent" href="https://www.tri.global/our-work/robotics" target="_blank">Toyota Research Institute</a></h3>
-            <p>Intern, Large Behavior Models Team (Incoming Summer 2025)</p>
+            <p>Intern, Large Behavior Models Team (May 2025 - Present)</p>
           </div>
         </article>
         <article class="experience-card">
