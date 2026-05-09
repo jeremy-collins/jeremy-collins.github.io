@@ -299,6 +299,30 @@
       <!-- Publications Section -->
       <section id="publications">
         <h2>Publications</h2>
+        
+        <article class="publication">
+          <div class="media">
+            <a href="images/tapestry_headliner.png" target="_blank">
+              <img src="images/tapestry_headliner.png" width="90%" autoplay muted loop></img>
+            </a>
+          </div>
+          <div class="pub-details">
+            <h3>TAPESTRY: A Single Backbone for Video Generation and Robot Control</h3>
+            <p>
+              Jeremy A. Collins, Seungjae Lee, Rachanon Wachakorn, Krishnan Srinivasan, Animesh Garg,
+Vitor Campagnolo Guizilini, Paarth Shah<br>
+              <strong>In Submission</strong><br>
+              <a class="link-accent" href="https://www.dropbox.com/scl/fi/m4l5d9vdidrc2z4se56r3/tapestry.pdf?rlkey=zsv2djjy07e1h5wi88yglzzw5&st=90atr5xf&dl=0" target="_blank">Paper</a> |
+              <!-- <a class="link-accent" href="https://github.com/pairlab/AMPLIFY" target="_blank">Code</a> | -->
+              <a class="link-accent" href="https://tapestry-wam.github.io/" target="_blank">Website</a> 
+              <!-- <a class="link-accent" href="https://x.com/jerthesquare_/status/1935838737948356907?s=20" target="_blank">Tweet</a> | -->
+              <!-- <a class="link-accent" href="https://youtu.be/bB_Y9yWE_2g?si=dACZ-oyaFkfK4Xc0" target="_blank">Podcast</a> -->
+            </p>
+            <p class="publication-description">TAPESTRY treats robot actions as single patch tokens in the video model's latent space. Video latents and action patches share the same patch embedding layers and the same diffusion backbone. At test time, the model generates an action chunk in a single DDIM step from pure noise in 84ms on consumer hardware, no video generation required.</p>
+          </div>
+        </article>
+        
+        
         <article class="publication">
           <div class="media">
             <a href="images/amplify_headliner.mp4" target="_blank">
@@ -319,6 +343,7 @@
             <p class="publication-description">AMPLIFY is a novel framework that leverages large-scale video data by encoding visual dynamics into compact, discrete motion tokens derived from keypoint trajectories. Our modular approach decouples the challenges of learning <strong>what</strong> motion defines a task from <strong>how</strong> robots can perform it.</p>
           </div>
         </article>
+
         <article class="publication">
             <div class="media">
               <!-- <a href="images/cobalt_sys_arch.png" target="images/cobalt_sys_arch.png"> -->
