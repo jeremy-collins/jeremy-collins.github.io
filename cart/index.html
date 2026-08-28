@@ -3,27 +3,75 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <title>taskloop cart</title>
-<style>body{font:16px system-ui;margin:3rem auto;max-width:28rem;padding:0 1rem;color:#222}</style>
-<p id=s>Opening your Amazon cart…</p>
-<p><a id=go href="https://www.amazon.com/gp/aws/cart/add.html">tap here if nothing happens ↗</a></p>
+<style>
+  body{font:16px/1.5 system-ui;margin:2rem auto;max-width:34rem;padding:0 1rem;color:#222}
+  h1{font-size:1.25rem;margin:0 0 .25rem}
+  .sub{color:#666;font-size:.9rem;margin:0 0 1.2rem}
+  .item{display:flex;justify-content:space-between;gap:.75rem;padding:.45rem 0;border-bottom:1px solid #eee}
+  .item a{color:#0a58ca;text-decoration:none}
+  .item a:hover{text-decoration:underline}
+  .asin{color:#999;font:12px ui-monospace,monospace;white-space:nowrap}
+  .btn{display:inline-block;margin:.35rem .5rem .35rem 0;padding:.55rem .9rem;border-radius:.6rem;
+       border:1px solid #bbb;background:#fff;color:#222;text-decoration:none;cursor:pointer;font-size:.95rem}
+  .btn.primary{background:#0a58ca;border-color:#0a58ca;color:#fff}
+  .note{color:#666;font-size:.85rem;margin-top:1rem}
+  #legacy-note{color:#a15c00;font-size:.85rem}
+</style>
+<h1>taskloop cart</h1>
+<p class="sub" id="sub">Reading cart…</p>
+<div id="items"></div>
+<p style="margin-top:1rem">
+  <button class="btn primary" id="copy">copy all ASINs</button>
+  <a class="btn" id="legacy" href="#">try one-click bulk add ↗</a>
+</p>
+<p class="note"><b>Fastest path:</b> tap each item above — every product page's own
+  Add-to-Cart button always works. Or hit <b>copy all ASINs</b> and paste into
+  Amazon Business's bulk-ordering box. On desktop, the dashboard's Inventory tab
+  also has the <i>fill cart</i> extension button, which clicks Amazon's own
+  buttons for you.</p>
+<p id="legacy-note">The one-click bulk link is Amazon's legacy endpoint — since
+  late Aug 2026 it usually lands on an <i>empty</i> cart (Amazon rerouted it to a
+  broken handler). It's kept here in case they fix it; if your cart comes up
+  empty, use the item links or the ASIN paste instead.</p>
 <script>
-/* Hosted on GitHub Pages (jeremy-collins.github.io/cart/) — moved off the
-   automaton tailscale funnel 2026-08-28 after the 8/27 crash dropped the
-   funnel enablement and killed every DM cart link. Pages is always up, so
-   the link no longer depends on automaton being awake. Phones hand
-   www.amazon.com links straight to the consumer Amazon app; a gestureless
-   location.replace() from this domain stays in the browser, where the
-   Business sign-in works like on desktop. Cart params travel in the
-   #fragment — they never reach any server log. */
+/* Hosted on GitHub Pages (always up; params ride the #fragment so they never
+   reach any server log). v2 2026-08-28: no longer a blind redirect to
+   /gp/aws/cart/add.html — Amazon rerouted that endpoint to /associates/addtocart,
+   which silently adds NOTHING (signed-in users land on "Your Amazon Cart is
+   empty"). All 12 ASINs of the day probed live+buyable when this was
+   root-caused, so the page now offers the paths that still work. */
 var q = location.hash.slice(1);
-if (q) {
-  /* legacy endpoint on purpose: verified working click in Jeremy's history
-     (8/14); the /associates/addtocart target it redirects anon users to is
-     confirmed broken when hit directly while signed in */
-  var url = 'https://www.amazon.com/gp/aws/cart/add.html?' + q;
-  document.getElementById('go').href = url;
-  location.replace(url);
+var itemsEl = document.getElementById('items'), sub = document.getElementById('sub');
+if (!q) {
+  sub.textContent = 'No cart in this link — open the latest Slack DM link or the dashboard Inventory tab.';
 } else {
-  document.getElementById('s').textContent = 'No cart in this link — open the latest Slack DM link instead.';
+  var params = new URLSearchParams(q);
+  var items = [];
+  for (var i = 1; params.get('ASIN.' + i); i++) {
+    items.push({asin: params.get('ASIN.' + i), name: params.get('Name.' + i) || null});
+  }
+  sub.textContent = items.length + ' item' + (items.length === 1 ? '' : 's') +
+    ' — tap an item to open its Amazon page and add it from there.';
+  items.forEach(function (it, idx) {
+    var d = document.createElement('div');
+    d.className = 'item';
+    d.innerHTML = '<a href="https://www.amazon.com/dp/' + encodeURIComponent(it.asin) +
+      '" target="_blank" rel="noreferrer">' + (idx + 1) + '. ' +
+      (it.name ? it.name.replace(/</g, '&lt;') : it.asin) + ' ↗</a>' +
+      '<span class="asin">' + it.asin + '</span>';
+    itemsEl.appendChild(d);
+  });
+  document.getElementById('copy').addEventListener('click', function () {
+    var t = items.map(function (it) { return it.asin; }).join('\n');
+    navigator.clipboard.writeText(t).then(function () {
+      document.getElementById('copy').textContent = 'copied ' + items.length + ' ASINs ✓';
+    });
+  });
+  // legacy bulk attempt: pass through ONLY Amazon's own params (strip Name.i)
+  var amz = [];
+  params.forEach(function (v, k) {
+    if (/^(AssociateTag|ASIN\.\d+|Quantity\.\d+)$/.test(k)) amz.push(k + '=' + encodeURIComponent(v));
+  });
+  document.getElementById('legacy').href = 'https://www.amazon.com/gp/aws/cart/add.html?' + amz.join('&');
 }
 </script>
