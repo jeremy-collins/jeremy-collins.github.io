@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+"""test-fix — run tests; on failure, let Claude attempt a bounded fix loop.
+
+usage: test-fix "<test command>" <max_attempts>
+       e.g. test-fix "pytest -x" 3
+
+Runs the command in the current directory. On failure, `claude -p`
+(acceptEdits) gets the failure output and makes a minimal fix; the loop
+ends on green or after max_attempts fixes. Exit 0 only if tests pass.
+"""
+import subprocess
+import sys
+
+if len(sys.argv) != 3 or not sys.argv[2].isdigit():
+    sys.exit('usage: test-fix "<test command>" <max_attempts>')
+cmd, max_att = sys.argv[1], int(sys.argv[2])
+
+for attempt in range(max_att + 1):
+    r = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if r.returncode == 0:
+        print(f"tests green ({cmd!r}, {attempt} fix attempt(s))")
+        print(r.stdout[-2000:])
+        sys.exit(0)
+    if attempt == max_att:
+        break
+    tail = (r.stdout + r.stderr)[-4000:]
+    print(f"tests failed — fix attempt {attempt + 1}/{max_att}", flush=True)
+    fix = subprocess.run(
+        ["claude", "-p", "--permission-mode", "acceptEdits",
+         f"Tests failed in this directory. Command: {cmd}\n\nOutput tail:\n{tail}\n\n"
+         "Fix the underlying code (or the test, if the test itself is wrong). "
+         "Make the minimal change; do not add fallbacks that hide the failure."],
+        capture_output=True, text=True,
+    )
+    if fix.returncode != 0:
+        sys.exit(f"test-fix: claude -p failed:\n{fix.stderr}")
+
+print(f"tests still failing after {max_att} fix attempt(s):")
+print((r.stdout + r.stderr)[-4000:])
+sys.exit(1)

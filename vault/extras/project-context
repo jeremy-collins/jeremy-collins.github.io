@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""project-context — per-repo CLAUDE.local.md rebuilt from your vault.
+
+usage: project-context [project-name ...]      (default: every project)
+
+Config: ~/.vault/projects.json
+  {
+    "dream": {
+      "repos": ["~/code/dream"],              # local paths; CLAUDE.local.md written in each
+      "vault_dirs": ["Projects/Dream"],       # vault folders whose recent notes belong to it
+      "keywords": ["dream", "eval"]           # case-insensitive; match daily notes, RECENT.md, Calendar.md
+    }
+  }
+
+For each project it gathers, from the vault: recent notes under vault_dirs
+(14 days), daily-note lines mentioning a keyword (14 days), RECENT.md
+sessions mentioning a keyword or the repo name, and upcoming Calendar.md
+lines mentioning a keyword — then writes the block between
+<!-- project-context:start --> / <!-- project-context:end --> in each repo's
+CLAUDE.local.md (anything outside the markers is kept; the file is added to
+.git/info/exclude so it never reaches the shared repo). Hard cap 8 KB per
+project: context is a budget. Missing config or repo paths fail loudly.
+Typical cron: hourly.
+"""
+import json
+import os
+import re
+import sys
+import time
+from datetime import date
+
+VAULT = os.path.expanduser(os.environ.get("VAULT_DIR", "~/vault"))
+CONFIG = os.path.expanduser("~/.vault/projects.json")
+DAYS = 14
+CAP = 8000
+START, END = "<!-- project-context:start -->", "<!-- project-context:end -->"
+
+if not os.path.isfile(CONFIG):
+    sys.exit(f"project-context: {CONFIG} not found — see script header for the format")
+with open(CONFIG) as f:
+    projects = json.load(f)
+names = sys.argv[1:] or list(projects)
+unknown = [n for n in names if n not in projects]
+if unknown:
+    sys.exit(f"project-context: not in {CONFIG}: {', '.join(unknown)}")
+
+cutoff = time.time() - DAYS * 86400
+
+
+def read(path):
+    with open(path, errors="replace") as f:
+        return f.read()
+
+
+def mentions(line, kws):
+    low = line.lower()
+    return any(k in low for k in kws)
+
+
+def recent_notes(dirs):
+    out = []
+    for d in dirs:
+        root = os.path.join(VAULT, d)
+        if not os.path.isdir(root):
+            sys.exit(f"project-context: vault dir missing: {root}")
+        for dirpath, _, files in os.walk(root):
+            for fn in files:
+                p = os.path.join(dirpath, fn)
+                if fn.endswith(".md") and os.path.getmtime(p) > cutoff:
+                    out.append((os.path.getmtime(p), os.path.relpath(p, VAULT)))
+    out.sort(reverse=True)
+    chunks = []
+    for _, rel in out[:6]:
+        body = "\n".join(read(os.path.join(VAULT, rel)).splitlines()[:30])
+        chunks.append(f"### {rel}\n{body}")
+    return chunks
+
+
+def daily_lines(kws):
+    hits = []
+    for fn in sorted(os.listdir(VAULT), reverse=True):
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}\.md", fn):
+            continue
+        p = os.path.join(VAULT, fn)
+        if os.path.getmtime(p) < cutoff:
+            continue
+        lines = [ln.strip() for ln in read(p).splitlines() if mentions(ln, kws)]
+        if lines:
+            hits.append(f"**{fn[:-3]}**: " + " · ".join(lines[:8]))
+    return hits[:DAYS]
+
+
+def recent_sessions(kws):
+    p = os.path.join(VAULT, "RECENT.md")
+    if not os.path.isfile(p):
+        return []
+    return [ln for ln in read(p).splitlines()[1:] if mentions(ln, kws)][:10]
+
+
+def upcoming(kws):
+    p = os.path.join(VAULT, "Calendar.md")
+    if not os.path.isfile(p):
+        return []
+    return [ln.strip() for ln in read(p).splitlines() if mentions(ln, kws)][:10]
+
+
+def section(title, items, empty="_nothing in the last 14 days_"):
+    return f"## {title}\n" + ("\n".join(items) if items else empty) + "\n"
+
+
+def render(name, meta, repo):
+    kws = [k.lower() for k in meta["keywords"]] + [os.path.basename(repo).lower()]
+    body = "\n".join([
+        START,
+        f"# {name} — vault context (generated {date.today()} by project-context; do not hand-edit this block)",
+        "",
+        "Sources: daily notes and RECENT.md in the vault, plus " + ", ".join(meta["vault_dirs"]) + ".",
+        "Read the linked vault files for detail; this is a digest.",
+        "",
+        section("Recent project notes", recent_notes(meta["vault_dirs"])),
+        section("Daily-note mentions", daily_lines(kws)),
+        section("Recent Claude sessions (see Conversations/)", recent_sessions(kws)),
+        section("Upcoming calendar", upcoming(kws), "_no matching events (or no Calendar.md)_"),
+    ])
+    if len(body) > CAP:
+        body = body[:CAP] + f"\n_[truncated at {CAP} bytes — tighten vault_dirs/keywords in {CONFIG}]_\n"
+    return body + END + "\n"
+
+
+def write_block(repo, block):
+    target = os.path.join(repo, "CLAUDE.local.md")
+    existing = read(target) if os.path.isfile(target) else ""
+    if START in existing and END in existing:
+        pre, rest = existing.split(START, 1)
+        post = rest.split(END, 1)[1]
+        content = pre + block + post
+    else:
+        content = (existing.rstrip() + "\n\n" if existing.strip() else "") + block
+    with open(target, "w") as f:
+        f.write(content)
+    exclude = os.path.join(repo, ".git", "info", "exclude")
+    if os.path.isdir(os.path.dirname(exclude)):
+        lines = read(exclude).splitlines() if os.path.isfile(exclude) else []
+        if "CLAUDE.local.md" not in lines:
+            with open(exclude, "a") as f:
+                f.write("CLAUDE.local.md\n")
+    return target, len(block)
+
+
+for name in names:
+    meta = projects[name]
+    for key in ("repos", "vault_dirs", "keywords"):
+        if key not in meta:
+            sys.exit(f"project-context: project '{name}' is missing '{key}' in {CONFIG}")
+    for repo in meta["repos"]:
+        repo = os.path.expanduser(repo)
+        if not os.path.isdir(repo):
+            sys.exit(f"project-context: repo path missing for '{name}': {repo}")
+        target, size = write_block(repo, render(name, meta, repo))
+        print(f"{name}: {size} bytes → {target}")

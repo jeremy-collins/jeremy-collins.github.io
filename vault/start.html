@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>claude-vault-starter · setup</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
+<style>
+  :root{
+    --bg:#10141a; --panel:#171d24; --panel2:#1c232c; --ink:#d8dfe6; --mut:#8b98a5;
+    --line:#2a333d; --amber:#e8a04c;
+    --mono: ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg); color:var(--ink); margin:0;
+       font:16.5px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:760px; margin:0 auto; padding:56px 24px 80px}
+  .tag{font-family:var(--mono); font-size:12.5px; letter-spacing:.16em; text-transform:uppercase;
+       color:var(--amber); font-weight:700; margin:0 0 16px}
+  h1{font-size:clamp(30px,5vw,44px); line-height:1.1; letter-spacing:-.015em; margin:0 0 14px}
+  h2{font-size:20px; margin:44px 0 12px}
+  h2 .n{color:var(--amber); font-family:var(--mono); margin-right:10px}
+  p{max-width:60ch; color:var(--mut); margin:0 0 14px}
+  p b, li b{color:var(--ink)}
+  ul{margin:0 0 14px; padding-left:22px; color:var(--mut)}
+  li{margin-bottom:6px; max-width:58ch}
+  li::marker{color:var(--amber)}
+  pre{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--amber);
+      border-radius:8px; padding:14px 18px; overflow-x:auto;
+      font:14px/1.6 var(--mono); margin:0 0 14px}
+  pre .c{color:#5f6b77}
+  code{font-family:var(--mono); font-size:.86em; background:var(--panel2);
+       border:1px solid var(--line); border-radius:4px; padding:1px 6px}
+  a{color:var(--amber)}
+  table{border-collapse:collapse; font-size:14.5px; width:100%; margin:0 0 14px}
+  th{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.1em;
+     color:var(--mut); text-align:left; padding:6px 12px 6px 0; border-bottom:1px solid var(--line)}
+  td{padding:8px 12px 8px 0; border-bottom:1px solid var(--line); vertical-align:top; color:var(--mut)}
+  td:first-child{font-family:var(--mono); font-size:13px; color:var(--amber); white-space:nowrap}
+  .note{background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px 16px;
+        font-size:14.5px; color:var(--mut); margin:0 0 14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="tag" data-sid="intro">claude-vault-starter · from the workflow talk</p>
+  <h1>Your own vault + agent loop, in ~10 minutes.</h1>
+  <p>One folder of markdown that is your notes, a git repo, and the context every
+     Claude Code session starts with, plus the cron loop that keeps it synced and
+     the hooks that save every session. <b>Mechanisms only</b>: no one's preferences,
+     no personal config, nothing to untangle.</p>
+
+  <section data-sid="assisted">
+  <h2><span class="n">1</span>Let Claude set it up</h2>
+  <p>Paste this into any Claude Code session on your machine. Claude looks at
+     the machine first (how many sessions you have, which repos, whether you
+     already keep notes), asks four short questions about how you work, proposes
+     a shaped setup, <b>Seed</b> (notes + memory, nothing speaks) /
+     <b>Scholar</b> (+ per-repo context, weekly distill, tidy-up) /
+     <b>Operator</b> (+ agents that message you), installs only that, walks you
+     through one real loop, and leaves <code>Meta/Vault Setup.md</code> with an
+     undo line per piece and a two-week check-in:</p>
+  <pre style="cursor:pointer" title="click to select"
+       onclick="const r=document.createRange();r.selectNodeContents(this);const s=getSelection();s.removeAllRanges();s.addRange(r)"><code>Fetch https://jeremy-collins.com/vault/PROMPT.md (curl works) and follow its instructions to set up claude-vault-starter for me.</code></pre>
+  <p style="font-size:13px;margin-top:-6px">click the box to select it</p>
+
+  </section>
+  <section data-sid="by-hand">
+  <h2><span class="n">2</span>…or by hand</h2>
+  <pre><code>curl -LO https://jeremy-collins.com/vault/starter.tar.gz
+tar xzf starter.tar.gz &amp;&amp; cd claude-vault-starter
+./setup.sh</code></pre>
+  <p>Idempotent: safe to re-run any time. It tells you everything it does, shows
+     the crontab before installing it, and asks first. Feature-gate with
+     <code>STARTER_FEATURES=none</code> (core only) or a comma list of
+     <code>archive</code>, <code>comment-loop</code>.</p>
+
+  </section>
+  <section data-sid="what-you-get">
+  <h2><span class="n">3</span>What you get</h2>
+  <p>With the assisted setup, auto-sync, session archive, comment-loop, and the
+     Slack bridge are opt-in. Everything else always lands (and is inert until
+     you call it).</p>
+  <table>
+    <tr><th>piece</th><th>what it does</th></tr>
+    <tr><td>~/vault</td><td>git repo with <code>*.md merge=union</code>, so two machines editing the same note never conflict</td></tr>
+    <tr><td>vault-sync</td><td>every 5 min: commit → pull (rebase, merge fallback) → push. Commit-first: nothing saved to disk can be lost</td></tr>
+    <tr><td>SessionStart hook</td><td>every Claude session in the vault opens knowing today's <code>YYYY-MM-DD.md</code> note</td></tr>
+    <tr><td>Stop hook + save-convo</td><td>every finished session lands in <code>Conversations/</code> with a one-line index in <code>RECENT.md</code></td></tr>
+    <tr><td>kssh</td><td><code>kssh &lt;host&gt;</code>: a remote tmux session that survives wifi drops, suspend, reboots</td></tr>
+    <tr><td>vault-run-if-primary</td><td>7-line guard so identical crontabs on N machines produce exactly one sender</td></tr>
+    <tr><td>deploy-crontab</td><td>cron rendered from <code>~/.vault/crontab.template</code>, reviewed with <code>--diff</code>, never hand-edited</td></tr>
+    <tr><td>claude-slack</td><td>agents DM you and wait for your answer: <code>send</code> / <code>ask</code> (with a kill-able grace window) / <code>wait</code>. Two values in <code>slack.env</code>; the deck's manifest slide covers the app</td></tr>
+    <tr><td>example-agent</td><td>a working template agent: guard → vault context → <code>claude -p</code> → DM. Clone it into your first agent</td></tr>
+    <tr><td>vault-context</td><td>what a session started here will load and how much (global/project CLAUDE.md, the SessionStart hook's real output vs the 2 KB cap, memory index, RECENT.md), in bytes and ~tokens, with bloat warnings</td></tr>
+    <tr><td>comment-loop/</td><td>shift+click pins on any locally-served page wake a Claude session that edits and replies, the loop this deck was built with</td></tr>
+  </table>
+  <p><b>Bells &amp; whistles</b>: 14 standalone scripts in <a href="extras/"><code>extras/</code></a> on this
+     site, each downloaded only if the proposed setup includes it (all
+     stdlib-only python, all cron lines guarded by <code>vault-run-if-primary</code>):</p>
+  <table>
+    <tr><th>script</th><th>what it does</th></tr>
+    <tr><td colspan="2"><b>context layer</b>: silent, makes every session start smarter</td></tr>
+    <tr><td>project-context</td><td>hourly: per-repo <code>CLAUDE.local.md</code> (git-excluded) rebuilt from the vault notes, daily-note lines, recent sessions and calendar entries that mention that project; 8 KB cap</td></tr>
+    <tr><td>session-distill</td><td>weekly: a week of <code>Conversations/</code> → one <code>Distill/</code> note: decisions, open threads, things learned, what the next session should know</td></tr>
+    <tr><td colspan="2"><b>agents that reach out to you</b> (DM via Slack bridge, else print)</td></tr>
+    <tr><td>task-worker</td><td>hourly: DMs a plan for one unchecked task in <code>Tasks.md</code>; reply "yes" and it does the work and reports back (needs the bridge)</td></tr>
+    <tr><td>task-nagger</td><td>9am / 2pm / 7pm: picks the single task most worth doing right now and nudges you</td></tr>
+    <tr><td>journal-prompt</td><td>11:55pm: one specific question about what actually happened today, from your note + commits + calendar</td></tr>
+    <tr><td>vault-digest</td><td>8am: 5-line summary of everything that changed in the vault in the last 24h</td></tr>
+    <tr><td colspan="2"><b>pipelines: data in and out of the vault</b></td></tr>
+    <tr><td>vault-organizer</td><td>daily: Claude proposes filing loose root notes into your folders; python validates every move, <code>Inbox/</code> when unsure</td></tr>
+    <tr><td>todoist-tasks</td><td>every 30 min: new Todoist tasks → <code>Tasks.md</code>, scored I/U/T by Claude (needs your API token)</td></tr>
+    <tr><td>calendar-sync</td><td>hourly: your private iCal feed → <code>Calendar.md</code>, next 14 days</td></tr>
+    <tr><td>refine-prefs</td><td>weekly: distills corrections you made in archived sessions into <code>coding_prefs.md</code></td></tr>
+    <tr><td colspan="2"><b>tools &amp; upkeep</b></td></tr>
+    <tr><td>reminder</td><td><code>reminder add "+30m" "stand up"</code>: DM (or log) when due; a per-minute cron line fires them</td></tr>
+    <tr><td>vault-doctor</td><td>daily: broken links, unclosed frontmatter, orphan notes → <code>Meta/vault_doctor.md</code></td></tr>
+    <tr><td>vault-tokens</td><td><code>vault-tokens 7</code>: per-day Claude Code token usage, from local session logs</td></tr>
+    <tr><td>test-fix</td><td><code>test-fix "pytest -x" 3</code>: run any test command; on failure Claude makes bounded, minimal fix attempts</td></tr>
+  </table>
+
+  </section>
+  <section data-sid="make-it-yours">
+  <h2><span class="n">4</span>Two optional steps that make it yours</h2>
+  <pre><code><span class="c"># back it up + enable multi-machine sync (private repo)</span>
+gh repo create vault --private --source ~/vault --push
+
+<span class="c"># write today's note, then open any Claude session in ~/vault</span>
+echo "- trying the starter kit" >> ~/vault/$(date +%F).md</code></pre>
+  <ul>
+    <li><b>Second machine:</b> clone your repo to <code>~/vault</code>, run <code>./setup.sh</code> again, then <code>rm ~/.vault/.is_primary</code> there.</li>
+    <li><b>Obsidian</b> (optional): open <code>~/vault</code> as a vault. It's just markdown; the system doesn't care what editor you use.</li>
+  </ul>
+
+  </section>
+  <section data-sid="not-included">
+  <h2><span class="n">5</span>Deliberately not included</h2>
+  <p>Coding-style preferences, output styles, permission settings, and pipelines tied
+     to one person's accounts (eval watchers, channel responder, account rotation).
+     Those are shaped around one person's setup and taste. This kit is the rails they
+     run on. Generic versions of everything else (organizer, digest, task agents,
+     calendar/Todoist feeds) are in bells &amp; whistles above. Build your own agents on top: start from
+     <code>example-agent</code>, put it in cron, wrap outgoing ones in
+     <code>vault-run-if-primary</code>, and they inherit the same guarantees.</p>
+  <div class="note">Want one of the team-specific pieces walked through, say the channel
+     responder or the repo digest? Ask Jeremy; each one is a ~1-file script plus a token,
+     and the Slack-token slide in the deck covers the hard part.</div>
+
+  </section>
+  <section data-sid="if-off">
+  <h2><span class="n">6</span>If something looks off</h2>
+  <ul>
+    <li><code>~/.local/bin</code> not on PATH → <code>export PATH="$HOME/.local/bin:$PATH"</code> in your shell rc.</li>
+    <li>Hooks not firing → they're plain JSON in <code>~/vault/.claude/settings.json</code> (SessionStart) and <code>~/.claude/settings.json</code> (Stop); setup.sh never overwrites existing hooks and leaves <code>.bak</code> files.</li>
+    <li>Sync conflicts → only non-markdown files can conflict; <code>git status</code> in <code>~/vault</code> shows exactly what.</li>
+  </ul>
+  </section>
+
+  <p style="margin-top:44px"><a href="index.html">← back to the deck</a></p>
+</div>
+</body>
+</html>

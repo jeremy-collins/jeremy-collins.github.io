@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+"""todoist-tasks — import new Todoist tasks into Tasks.md, scored by Claude.
+
+usage: todoist-tasks
+
+Fetches open tasks from the Todoist REST API, and for ones not yet imported
+asks `claude -p` for I(mportance)/U(rgency)/T(ime) scores (1-5), then
+appends them to vault/Tasks.md as:
+    - [ ] <content> — I:4 U:2 T:3 [todoist]
+
+Config — ~/.vault/todoist.env must define TODOIST_API_TOKEN=...
+(Todoist → Settings → Integrations → Developer). State (imported ids):
+~/.vault/todoist_state.json. Typical cron: every 30 min.
+"""
+import json
+import os
+import re
+import sys
+import urllib.request
+
+VAULT = os.path.expanduser(os.environ.get("VAULT_DIR", "~/vault"))
+STATE = os.path.expanduser("~/.vault/todoist_state.json")
+API = os.environ.get("TODOIST_API_URL", "https://api.todoist.com/rest/v2/tasks")
+
+env_file = os.path.expanduser("~/.vault/todoist.env")
+if not os.path.isfile(env_file):
+    sys.exit(f"todoist-tasks: {env_file} missing (TODOIST_API_TOKEN=...)")
+token = None
+with open(env_file) as f:
+    for line in f:
+        if line.startswith("TODOIST_API_TOKEN="):
+            token = line.split("=", 1)[1].strip()
+if not token:
+    sys.exit(f"todoist-tasks: TODOIST_API_TOKEN not set in {env_file}")
+
+req = urllib.request.Request(API, headers={"Authorization": f"Bearer {token}"})
+with urllib.request.urlopen(req, timeout=30) as r:
+    tasks = json.loads(r.read())
+
+seen = set(json.load(open(STATE))["ids"]) if os.path.isfile(STATE) else set()
+new = [t for t in tasks if str(t["id"]) not in seen]
+if not new:
+    sys.exit(0)
+
+import subprocess
+prompt = (
+    "Score each task 1-5 on I(mportance), U(rgency), T(ime needed; 5 = big).\n"
+    "Tasks:\n" + "\n".join(f"{i}: {t['content']}" for i, t in enumerate(new))
+    + '\n\nReply with ONLY a JSON object like {"0": [4, 2, 3]} — index to '
+    "[I, U, T]. No prose, no code fences."
+)
+r = subprocess.run(["claude", "-p", prompt], capture_output=True, text=True)
+if r.returncode != 0:
+    sys.exit(f"todoist-tasks: claude -p failed:\n{r.stderr}")
+m = re.search(r"\{.*\}", r.stdout, re.S)
+if not m:
+    sys.exit(f"todoist-tasks: no JSON in claude output:\n{r.stdout}")
+scores = json.loads(m.group(0))
+
+tasks_path = os.path.join(VAULT, "Tasks.md")
+with open(tasks_path, "a") as f:
+    for i, t in enumerate(new):
+        I, U, T = scores[str(i)]
+        f.write(f"- [ ] {t['content']} — I:{I} U:{U} T:{T} [todoist]\n")
+        print(f"imported: {t['content']} (I:{I} U:{U} T:{T})")
+
+os.makedirs(os.path.dirname(STATE), exist_ok=True)
+with open(STATE, "w") as f:
+    json.dump({"ids": sorted(seen | {str(t["id"]) for t in new})}, f)

@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+"""vault-tokens — Claude Code token usage per day, from local session logs.
+
+usage: vault-tokens <days>        e.g. vault-tokens 7
+
+Reads ~/.claude/projects/*/*.jsonl (written by Claude Code itself) and
+prints per-day input / cache-read / output token totals plus session counts.
+"""
+import collections
+import datetime
+import glob
+import json
+import os
+import sys
+
+if len(sys.argv) != 2 or not sys.argv[1].isdigit():
+    sys.exit("usage: vault-tokens <days>   e.g. vault-tokens 7")
+days = int(sys.argv[1])
+cutoff = (datetime.date.today() - datetime.timedelta(days=days - 1)).isoformat()
+
+per = collections.defaultdict(lambda: [0, 0, 0])   # day -> [in, cache_read, out]
+sessions = collections.defaultdict(set)            # day -> {jsonl paths}
+bad = 0
+
+for path in glob.glob(os.path.expanduser("~/.claude/projects/*/*.jsonl")):
+    with open(path, errors="replace") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                ev = json.loads(line)
+            except json.JSONDecodeError:
+                bad += 1
+                continue
+            u = (ev.get("message") or {}).get("usage")
+            ts = ev.get("timestamp")
+            if not u or not ts or ts[:10] < cutoff:
+                continue
+            day = ts[:10]
+            per[day][0] += u.get("input_tokens", 0)
+            per[day][1] += u.get("cache_read_input_tokens", 0)
+            per[day][2] += u.get("output_tokens", 0)
+            sessions[day].add(path)
+
+if not per:
+    sys.exit(f"no usage found in the last {days} days")
+
+print(f"{'day':<12}{'sessions':>9}{'input':>12}{'cache_read':>14}{'output':>12}")
+tot = [0, 0, 0]
+for day in sorted(per):
+    i, c, o = per[day]
+    tot = [tot[0] + i, tot[1] + c, tot[2] + o]
+    print(f"{day:<12}{len(sessions[day]):>9}{i:>12,}{c:>14,}{o:>12,}")
+print(f"{'total':<12}{'':>9}{tot[0]:>12,}{tot[1]:>14,}{tot[2]:>12,}")
+if bad:
+    print(f"({bad} malformed log lines skipped)")

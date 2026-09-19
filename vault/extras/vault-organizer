@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+"""vault-organizer — file loose root notes into folders (Inbox/ when unsure).
+
+usage: vault-organizer
+
+Asks `claude -p` for a filing plan over the loose .md files at the vault
+root, then executes it. Daily notes (YYYY-MM-DD.md), README.md, RECENT.md
+and TODO.md always stay at root. Only existing top-level folders (or Inbox)
+are allowed as destinations. Set VAULT_DIR to override ~/vault.
+Typical cron: daily, early morning.
+"""
+import json
+import os
+import re
+import subprocess
+import sys
+
+VAULT = os.path.expanduser(os.environ.get("VAULT_DIR", "~/vault"))
+KEEP = re.compile(r"^(\d{4}-\d{2}-\d{2}|README|RECENT|TODO)\.md$")
+
+loose = sorted(
+    f for f in os.listdir(VAULT)
+    if f.endswith(".md") and not KEEP.match(f)
+    and os.path.isfile(os.path.join(VAULT, f))
+)
+if not loose:
+    sys.exit(0)
+
+dirs = sorted(
+    d for d in os.listdir(VAULT)
+    if os.path.isdir(os.path.join(VAULT, d)) and not d.startswith(".")
+)
+
+prompt = (
+    "You organize a markdown note vault. Loose files at the vault root:\n"
+    + "\n".join(f"- {f}" for f in loose)
+    + "\n\nExisting top-level folders:\n"
+    + "\n".join(f"- {d}" for d in dirs)
+    + "\n\nReply with ONLY a JSON array, one entry per file, like:\n"
+    '[{"file": "note.md", "dest": "SomeFolder"}]\n'
+    'Pick the best existing folder for each file, or "Inbox" when unsure.\n'
+    "Do not invent folder names. No prose, no code fences."
+)
+
+r = subprocess.run(["claude", "-p", prompt], capture_output=True, text=True, cwd=VAULT)
+if r.returncode != 0:
+    sys.exit(f"vault-organizer: claude -p failed:\n{r.stderr}")
+
+m = re.search(r"\[.*\]", r.stdout, re.S)
+if not m:
+    sys.exit(f"vault-organizer: no JSON array in claude output:\n{r.stdout}")
+plan = json.loads(m.group(0))
+
+for mv in plan:
+    f, dest = mv["file"], mv["dest"]
+    if f not in loose:
+        sys.exit(f"vault-organizer: plan names a non-loose file: {f!r}")
+    if dest != "Inbox" and dest not in dirs:
+        sys.exit(f"vault-organizer: plan invents a folder: {dest!r}")
+    src = os.path.join(VAULT, f)
+    dst = os.path.join(VAULT, dest, f)
+    if os.path.exists(dst):
+        sys.exit(f"vault-organizer: refusing to overwrite {dst}")
+    os.makedirs(os.path.join(VAULT, dest), exist_ok=True)
+    os.rename(src, dst)
+    print(f"{f} → {dest}/")

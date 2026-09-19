@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+"""refine-prefs — distill your coding corrections into coding_prefs.md.
+
+usage: refine-prefs
+
+Reads recent session exports from vault/Conversations/ (last 14 days, up to
+8 files) plus the existing vault/coding_prefs.md, and asks `claude -p` to
+produce the updated preferences file: durable, generalizable rules you have
+actually expressed — not one-off task details. Writes coding_prefs.md
+(backup in coding_prefs.md.bak). Typical cron: weekly.
+"""
+import glob
+import os
+import subprocess
+import sys
+import time
+
+VAULT = os.path.expanduser(os.environ.get("VAULT_DIR", "~/vault"))
+PREFS = os.path.join(VAULT, "coding_prefs.md")
+
+cutoff = time.time() - 14 * 86400
+convos = sorted(
+    (p for p in glob.glob(os.path.join(VAULT, "Conversations", "*.md"))
+     if os.path.getmtime(p) > cutoff),
+    key=os.path.getmtime, reverse=True,
+)[:8]
+if not convos:
+    print("refine-prefs: no recent conversations — nothing to do")
+    sys.exit(0)
+
+chunks = []
+for p in convos:
+    with open(p, errors="replace") as f:
+        tail = "\n".join(f.read().splitlines()[-150:])
+    chunks.append(f"### {os.path.basename(p)}\n{tail}")
+
+existing = ""
+if os.path.isfile(PREFS):
+    with open(PREFS) as f:
+        existing = f.read()
+
+prompt = (
+    "You maintain my coding-preferences file. Below are the current file and "
+    "excerpts from my recent Claude Code sessions. Extract durable, "
+    "generalizable preferences I actually expressed (corrections, repeated "
+    "asks, style rulings) and merge them into the file — deduplicate, keep "
+    "it terse, drop nothing that is still true. Reply with ONLY the full "
+    "updated markdown file.\n\n"
+    f"## Current coding_prefs.md\n{existing or '(empty)'}\n\n"
+    "## Recent sessions\n" + "\n\n".join(chunks)
+)
+r = subprocess.run(["claude", "-p", prompt], capture_output=True, text=True, cwd=VAULT)
+if r.returncode != 0:
+    sys.exit(f"refine-prefs: claude -p failed:\n{r.stderr}")
+updated = r.stdout.strip()
+if not updated:
+    sys.exit("refine-prefs: claude returned an empty file — refusing to write")
+
+if os.path.isfile(PREFS):
+    os.replace(PREFS, PREFS + ".bak")
+with open(PREFS, "w") as f:
+    f.write(updated + "\n")
+print(f"updated {PREFS} from {len(convos)} sessions (backup: coding_prefs.md.bak)")

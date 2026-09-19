@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+"""task-worker — picks up a task from Tasks.md, pitches a plan, runs on "yes".
+
+usage: task-worker
+
+Takes the first unchecked `- [ ]` line in vault/Tasks.md, has `claude -p`
+draft a short plan, DMs it via `claude-slack ask` and waits. Reply starting
+with "yes" → Claude executes inside the vault (acceptEdits) and DMs the
+result; anything else → logged as declined. Each task is pitched at most
+once per day (state in ~/.vault/task_worker_state.json).
+
+Requires the Slack bridge (~/.vault/slack.env). Typical cron: hourly,
+wrapped in vault-run-if-primary.
+"""
+import hashlib
+import json
+import os
+import subprocess
+import sys
+import time
+
+VAULT = os.path.expanduser(os.environ.get("VAULT_DIR", "~/vault"))
+STATE = os.path.expanduser("~/.vault/task_worker_state.json")
+
+if not os.path.isfile(os.path.expanduser("~/.vault/slack.env")):
+    sys.exit("task-worker: needs the Slack bridge (~/.vault/slack.env)")
+
+tasks_path = os.path.join(VAULT, "Tasks.md")
+if not os.path.isfile(tasks_path):
+    sys.exit(0)
+with open(tasks_path) as f:
+    open_tasks = [l.strip()[6:] for l in f if l.strip().startswith("- [ ]")]
+if not open_tasks:
+    sys.exit(0)
+
+state = json.load(open(STATE)) if os.path.isfile(STATE) else {}
+now = time.time()
+task = next(
+    (t for t in open_tasks
+     if now - state.get(hashlib.sha1(t.encode()).hexdigest(), 0) > 86400),
+    None,
+)
+if task is None:
+    sys.exit(0)
+key = hashlib.sha1(task.encode()).hexdigest()
+
+def claude(*args):
+    r = subprocess.run(["claude", *args], capture_output=True, text=True, cwd=VAULT)
+    if r.returncode != 0:
+        sys.exit(f"task-worker: claude failed:\n{r.stderr}")
+    return r.stdout.strip()
+
+plan = claude("-p",
+    f"Task from my vault's Tasks.md: {task!r}\n"
+    "Draft a plan in at most 3 short bullets. If it cannot be done by editing "
+    "files in this vault (needs external accounts, hardware, other people), "
+    "say exactly UNWORKABLE and why in one line.")
+
+state[key] = now
+os.makedirs(os.path.dirname(STATE), exist_ok=True)
+with open(STATE, "w") as f:
+    json.dump(state, f)
+
+if "UNWORKABLE" in plan:
+    sys.exit(0)
+
+r = subprocess.run(
+    ["claude-slack", "ask", "0",
+     f"task-worker: {task}\n\nplan:\n{plan}\n\nreply 'yes' to run it"],
+    capture_output=True, text=True,
+)
+if r.returncode != 0:
+    sys.exit(f"task-worker: claude-slack ask failed:\n{r.stderr}")
+reply = r.stdout.strip().lower()
+if not reply.startswith("y"):
+    print(f"declined: {task}")
+    sys.exit(0)
+
+result = subprocess.run(
+    ["claude", "-p", "--permission-mode", "acceptEdits",
+     f"Execute this plan for the task {task!r}, editing files in this vault "
+     f"only:\n{plan}\n\nThen append a one-line summary of what you did to "
+     "today's daily note (YYYY-MM-DD.md). Reply with that summary."],
+    capture_output=True, text=True, cwd=VAULT,
+)
+if result.returncode != 0:
+    sys.exit(f"task-worker: execution failed:\n{result.stderr}")
+subprocess.run(
+    ["claude-slack", "send",
+     f"task-worker done: {result.stdout.strip()}\n"
+     "Check it off in Tasks.md if you're happy."],
+    check=True,
+)

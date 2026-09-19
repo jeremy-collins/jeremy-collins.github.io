@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="description" content="A normal day narrated by the automation that runs it: a markdown vault that is also a git repo and the context every Claude Code session starts with, plus the cron agents around it, and a starter kit to build your own.">
+<title>How I Automated My Workflow</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
+<style>
+  :root{
+    --bg:#10141a; --panel:#171d24; --panel2:#1c232c; --ink:#d8dfe6; --mut:#8b98a5;
+    --line:#2a333d; --amber:#e8a04c; --amber-soft:#241b10; --teal:#3d8e92; --teal-xl:#12262a;
+    --mono: ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{height:100%; background:#0a0d11; font-family:var(--sans); color:var(--ink)}
+  #stage{position:fixed; top:50%; left:50%; width:1280px; height:720px;
+         transform:translate(-50%,-50%) scale(1); transform-origin:center center}
+  .slide{position:absolute; inset:0; width:1280px; height:720px; background:var(--bg);
+         padding:56px 72px 48px; display:none; flex-direction:column; overflow:hidden;
+         box-shadow:0 8px 40px rgba(0,0,0,.55); border:1px solid #1d242d}
+  .slide.active{display:flex}
+
+  /* chrome */
+  .tag{font-family:var(--mono); font-size:13px; letter-spacing:.16em; text-transform:uppercase;
+       color:var(--amber); font-weight:700; margin-bottom:20px}
+  .chip{align-self:flex-start; font-family:var(--mono); font-size:15px; font-weight:700; letter-spacing:.08em;
+        background:var(--amber); color:#10141a; border-radius:6px; padding:5px 14px; margin-bottom:24px}
+  .pageno{position:absolute; bottom:20px; right:28px; font-family:var(--mono); font-size:12px; color:var(--mut)}
+  .foot{position:absolute; bottom:20px; left:72px; font-family:var(--mono); font-size:11px; color:#525d68}
+
+  h1{font-size:42px; line-height:1.1; font-weight:700; letter-spacing:-.015em; margin-bottom:26px; text-wrap:balance}
+  h1 code{font-family:var(--mono); color:var(--amber); font-size:.92em}
+  .sub{font-size:21px; color:var(--mut); line-height:1.45; max-width:34em}
+  .sub b{color:var(--ink)}
+  .mono{font-family:var(--mono)}
+  .content{flex:1; display:flex; flex-direction:column; min-height:0; justify-content:center}
+  .cols{display:flex; gap:48px; align-items:center}
+  .col{flex:1; min-width:0}
+
+  ul.points{list-style:none; max-width:36em}
+  ul.points li{font-size:21px; line-height:1.4; padding:10px 0 10px 30px; position:relative}
+  ul.points li::before{content:"▸"; position:absolute; left:0; color:var(--amber)}
+  ul.points li b{color:var(--ink)}
+  ul.points li code{font-family:var(--mono); font-size:.84em; background:var(--panel2); border:1px solid var(--line); border-radius:4px; padding:1px 7px}
+
+  .rows{display:grid; gap:12px}
+  .row{display:grid; grid-template-columns:210px 1fr; gap:20px; align-items:baseline;
+       background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:15px 20px}
+  .row .k{font-family:var(--mono); font-size:16px; font-weight:700; color:var(--amber)}
+  .row .v{font-size:18.5px; color:var(--mut); line-height:1.4}
+  .row .v b{color:var(--ink)}
+  .row .v code{font-family:var(--mono); font-size:.82em; background:var(--panel2); border:1px solid var(--line); border-radius:4px; padding:1px 7px}
+
+  .wire{margin-top:22px; display:flex; flex-direction:column; gap:9px; font-family:var(--mono); font-size:14.5px; color:var(--mut); line-height:1.45}
+  .wire .w{display:flex; gap:12px; align-items:baseline}
+  .wire .n{color:var(--amber); font-weight:700}
+  .wire b{color:var(--ink); font-weight:600}
+
+  pre{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--amber);
+      border-radius:10px; padding:18px 24px; font-family:var(--mono);
+      font-size:16px; line-height:1.7}
+  pre .c{color:#5f6b77}
+  pre .a{color:var(--amber); font-weight:700}
+
+  .slack{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 18px; display:flex; gap:14px; max-width:34em}
+  .slack .av{width:38px; height:38px; border-radius:8px; background:var(--amber); color:#10141a; font:700 20px/38px var(--mono); text-align:center; flex:none}
+  .slack .who{font-weight:700; font-size:15.5px}
+  .slack .who span{font-weight:400; color:var(--mut); font-size:12.5px; font-family:var(--mono); margin-left:8px}
+  .slack .msg{font-size:15.5px; line-height:1.55; color:var(--ink); margin-top:3px}
+  .slack .msg code{font-family:var(--mono); font-size:.85em; background:var(--panel2); border:1px solid var(--line); border-radius:4px; padding:0 5px}
+
+  .board{display:grid; gap:10px}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px}
+  .card.need{border-color:var(--amber)}
+  .card .hd{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap}
+  .card .nm{font-family:var(--mono); font-size:15px; font-weight:700; color:var(--amber)}
+  .card .mchip{font-family:var(--mono); font-size:11px; color:var(--mut); border:1px solid var(--line); border-radius:4px; padding:0 6px}
+  .card .st{font-size:16px; font-weight:700; margin-top:5px}
+  .card .lx{font-size:13.5px; color:var(--mut); margin-top:3px}
+  .card .bar{height:5px; background:var(--panel2); border-radius:3px; margin-top:9px; overflow:hidden}
+  .card .bar i{display:block; height:100%; background:var(--teal)}
+  .card .nu{font-family:var(--mono); font-size:11.5px; color:var(--amber); margin-top:8px; letter-spacing:.06em}
+
+  .stats{font-family:var(--mono); font-size:15px; color:var(--mut); margin-top:38px; letter-spacing:.02em}
+  .stats b{color:var(--amber)}
+  .cursor{display:inline-block; width:.46em; height:.88em; margin-left:.1em; background:var(--amber); vertical-align:baseline}
+  @media (prefers-reduced-motion: no-preference){ .cursor{animation:blink 1.25s steps(1) infinite} }
+  @keyframes blink{50%{opacity:0}}
+  a{color:var(--amber)}
+
+  /* overview mode */
+  body.overview #stage{display:none}
+  #grid{display:none}
+  body.overview #grid{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; padding:14px;
+        position:fixed; inset:0; overflow-y:auto; background:#06080b}
+  #grid .thumb{position:relative; aspect-ratio:16/9; cursor:pointer; border-radius:4px; overflow:hidden; outline:2px solid transparent}
+  #grid .thumb:hover{outline-color:var(--amber)}
+  #grid .thumb .mini{width:1280px; height:720px; transform-origin:top left; position:absolute; top:0; left:0; pointer-events:none}
+  #grid .thumb .mini .slide{display:flex; box-shadow:none}
+  #grid .thumb .tn{position:absolute; bottom:4px; right:6px; font-family:var(--mono); font-size:11px; color:#fff;
+        background:rgba(0,0,0,.55); padding:1px 6px; border-radius:6px; z-index:2}
+
+  #progress{position:fixed; bottom:0; left:0; height:3px; background:var(--amber); width:0%; z-index:50; transition:width .15s}
+  #help{position:fixed; top:12px; right:14px; font-family:var(--mono); font-size:11px; color:rgba(216,223,230,.4); z-index:50}
+
+  @media print{
+    html,body{background:#fff}
+    #stage{position:static; transform:none; width:auto; height:auto}
+    .slide{display:flex; position:relative; page-break-after:always; box-shadow:none; margin:0 auto}
+    #progress,#help,#grid{display:none !important}
+  }
+</style>
+</head>
+<body>
+<div id="help">←/→ slides · esc grid · f fullscreen · p print</div>
+<div id="progress"></div>
+<div id="grid"></div>
+<div id="stage">
+
+<!-- ============ 1 · TITLE ============ -->
+<section class="slide" data-sid="title">
+  <div class="content">
+    <p class="tag">jeremy collins · 2026</p>
+    <h1 style="font-size:58px">How I automated my workflow<span class="cursor"></span></h1>
+    <p class="sub">A normal day, narrated by the system that runs it, and how to get it for yourself.</p>
+    <p class="stats">one git repo · <b>~55</b> cron jobs · <b>4</b> machines · <b>28,573</b> commits · <b>2,703</b> saved sessions</p>
+  </div>
+</section>
+
+<!-- ============ 2 · THE IDEA ============ -->
+<section class="slide" data-sid="idea">
+  <p class="tag">the whole idea</p>
+  <div class="content">
+    <div class="cols">
+      <div class="col">
+        <h1>Everything is markdown in one git repo.</h1>
+        <p class="sub">Notes, tasks, transcripts, saved sessions, and the automation's own source code. <b>Agents read it, write it, and ship through it.</b></p>
+        <p class="sub" style="margin-top:18px">The same repo is my <b><a href="https://obsidian.md" target="_blank" rel="noopener">Obsidian</a> vault</b>, where I take notes all day. <span class="mono" style="color:var(--amber); font-size:16px">live demo →</span></p>
+      </div>
+      <div class="col">
+        <pre><code>~/vault/
+  2026-09-18.md    <span class="c">← today's note</span>
+  Tasks.md         <span class="c">← auto-scored</span>
+  Research/  Meta/
+  Conversations/   <span class="c">← every session</span>
+  RECENT.md        <span class="c">← last 100, indexed</span>
+  .vault/          <span class="c">← agent source + tests</span></code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3 · OVERNIGHT ============ -->
+<section class="slide" data-sid="chores">
+  <span class="chip">05:00 – 07:00</span>
+  <div class="content">
+    <h1>It does its chores before I'm up.</h1>
+    <div class="rows" style="max-width:56em">
+      <div class="row"><span class="k">every 5 min</span><span class="v"><b>sync_vault.sh</b>: pull Drive · Slack · calendar → commit → push</span></div>
+      <div class="row"><span class="k">05:00</span><span class="v"><b>organize_vault.py</b>: Claude files loose notes <span style="font-size:.85em">(moves, never deletes)</span></span></div>
+    </div>
+    <p class="sub" style="margin-top:26px">Every machine, every 5 minutes, all night. I wake up to a clean, current vault.</p>
+  </div>
+</section>
+
+<!-- ============ 4 · SLACK TOKEN HOW-TO ============ -->
+<section class="slide" data-sid="slack-bot">
+  <p class="tag">how-to · ~10 minutes</p>
+  <div class="content">
+    <h1>One paste gets you a Slack bot.</h1>
+    <div class="cols">
+      <div class="col">
+        <div class="rows">
+          <div class="row" style="grid-template-columns:44px 1fr"><span class="k">1</span><span class="v"><b>api.slack.com/apps</b> → New App → <b>From a manifest</b> → paste →</span></div>
+          <div class="row" style="grid-template-columns:44px 1fr"><span class="k">2</span><span class="v"><b>Install</b> → two tokens into <code>~/.vault/slack.env</code></span></div>
+          <div class="row" style="grid-template-columns:44px 1fr"><span class="k">3</span><span class="v"><code>/invite</code> the bot to your channel. Done.</span></div>
+        </div>
+      </div>
+      <div class="col">
+        <pre style="font-size:13.5px"><code>{ "display_information": { "name": "vault-bot" },
+  "features": { "bot_user":
+    { "display_name": "vault-bot" } },
+  "oauth_config": { "scopes": {
+    "bot":  ["chat:write", "reactions:write",
+             "im:write", "im:history"],
+    "user": ["channels:history"] } } }</code></pre>
+      </div>
+    </div>
+    <p class="sub" style="margin-top:20px; font-size:18px">Bot token posts, user token reads. That's the whole trick.</p>
+  </div>
+</section>
+
+<!-- ============ 5 · WARM SESSIONS ============ -->
+<section class="slide" data-sid="warm-sessions">
+  <span class="chip">08:05</span>
+  <div class="content">
+    <h1>Claude already knows what today is about.</h1>
+    <div class="cols">
+      <div class="col">
+        <ul class="points" style="font-size:20px">
+          <li>A SessionStart hook injects <b>today's note</b></li>
+          <li>Repo CLAUDE.md rebuilt every 5 min: <b>meetings · Slack · calendar</b></li>
+          <li>Prefs + standing memories load globally</li>
+          <li>Relevant vault changes refresh each repo's <b>TODO.md</b></li>
+        </ul>
+        <p class="stats" style="margin-top:26px"><b>zero</b> "let me explain my setup" preambles</p>
+      </div>
+      <div class="col">
+        <pre style="font-size:14px"><code><span class="c"># what a session sees at t=0</span>
+<span class="a">~/.claude/CLAUDE.md</span>   my coding prefs
+<span class="a">repo CLAUDE.md</span>        <span class="c">rebuilt 5 min ago:</span>
+  meetings · slack · calendar
+<span class="a">memory/</span>               standing memories
+<span class="a">hook →</span> today's note + 3 recent dailies
+
+<span class="c"># reads on demand: the whole vault</span>
+  Slack/ archives · Drive Sync/ docs
+  meeting transcripts · Tasks.md
+  Meta/situational_awareness.md  <span class="c">hourly synthesis</span>
+  RECENT.md + 2,700 saved sessions</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6 · MISSION CONTROL ============ -->
+<section class="slide" data-sid="mission-control">
+  <span class="chip">09:00</span>
+  <div class="content">
+    <h1>Mission control: every session on one board.</h1>
+    <div class="cols">
+      <div class="col">
+        <ul class="points" style="font-size:19px">
+          <li>Each session is a <b>named tmux session</b> on an always-on box, <b>75 of them</b> at last count</li>
+          <li>A card per session: state headline, last exchange, context bar, and a <b>"needs you"</b> footer only when I'm the blocker</li>
+          <li><b>Reply, spawn, resume</b>, or drive the raw terminal from the browser; laptop sessions join via a per-minute rsync</li>
+          <li><b>Nothing ends by accident:</b> closed terminal, OOM, reboot → a cron loop resurrects it with <code>claude --resume</code>, context intact</li>
+          <li>The vault rides along: an <b>allowlisted subset</b> syncs to the box, so personal notes never leave home</li>
+        </ul>
+        <p class="stats" style="margin-top:18px">one stdlib python file + one static page · <b>polling over plain HTTP</b></p>
+      </div>
+      <div class="col" style="flex:0 0 430px">
+        <div class="board">
+          <div class="card">
+            <div class="hd"><span class="nm">deck-rewrite</span><span class="mchip">box · ~/vault@main</span></div>
+            <div class="st">Editing slide 6, checking layout</div>
+            <div class="lx">→ screenshot matches; moving on to the setup page</div>
+            <div class="bar"><i style="width:42%"></i></div>
+          </div>
+          <div class="card need">
+            <div class="hd"><span class="nm">vault-doctor-fix</span><span class="mchip">box · ~/.vault@main</span></div>
+            <div class="st">Waiting on your yes</div>
+            <div class="lx">→ two fixes proposed for the orphan-link check. Ship both?</div>
+            <div class="bar"><i style="width:67%"></i></div>
+            <div class="nu">▲ needs you</div>
+          </div>
+          <div class="card">
+            <div class="hd"><span class="nm">thesis-ch3</span><span class="mchip">laptop · ~/thesis@figs</span></div>
+            <div class="st">Running the figure script</div>
+            <div class="lx">→ 3 of 5 panels regenerated</div>
+            <div class="bar"><i style="width:23%"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8 · AGENTS ALL DAY ============ -->
+<section class="slide" data-sid="agents">
+  <span class="chip">all day</span>
+  <div class="content">
+    <h1>Agents work the queue while I work.</h1>
+    <p class="sub" style="font-size:18px; margin-bottom:20px">My todo list syncs into <b>Tasks.md</b>, where Claude scores every task by <b>importance · urgency · time</b>. Then:</p>
+    <div class="rows" style="max-width:56em">
+      <div class="row"><span class="k">task_worker</span><span class="v"><b>triages Tasks.md for work it can own</b>, pitches me a plan in Slack, ships it on my 👍</span></div>
+      <div class="row"><span class="k">slack_responder</span><span class="v">drafts replies in my active threads with <b>full vault context</b></span></div>
+      <div class="row"><span class="k">action_detector</span><span class="v">turns Slack messages into actions, and risky ones ask first</span></div>
+      <div class="row"><span class="k">reminder</span><span class="v">"remind me in 40 min" → Slack ping</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9b · OVERNIGHT ============ -->
+<section class="slide" data-sid="overnight">
+  <span class="chip">overnight</span>
+  <div class="content">
+    <h1>Long jobs run while I sleep.</h1>
+    <div class="cols">
+      <div class="col">
+        <ul class="points" style="font-size:20px">
+          <li>Sessions live in <b>remote tmux</b> + plan docs in the vault, so disconnects lose nothing and <code>claude --resume</code> picks up mid-thought</li>
+          <li><b>Several Claude Max accounts</b>, enrolled once: on a usage limit, <code>claude-rotate</code> kills the session, <b>switches account, resumes, and nudges it onward</b> <span style="color:var(--mut); font-size:17px">(live as of this morning)</span></li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="rows">
+          <div class="row" style="grid-template-columns:44px 1fr"><span class="k">1</span><span class="v">questions go out via <code>claude-slack ask</code>: <b>5-min terminal grace</b>, then it DMs my phone and polls for the answer</span></div>
+          <div class="row" style="grid-template-columns:44px 1fr"><span class="k">2</span><span class="v">no reply? the question <b>parks in the plan's decision queue</b>…</span></div>
+          <div class="row" style="grid-template-columns:44px 1fr"><span class="k">3</span><span class="v">…work continues unblocked, and if Slack is down, an <b>outbox file</b> in the vault catches the message</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="sub" style="margin-top:22px; font-size:18px">Recent proof: a full talk deck assembled overnight. <b>One ping, three questions</b>.</p>
+  </div>
+</section>
+
+<!-- ============ 9c · LIVING DOCS ============ -->
+<section class="slide" data-sid="living-docs">
+  <span class="chip">twice daily</span>
+  <div class="content">
+    <h1>Docs that keep themselves current.</h1>
+    <ul class="points">
+      <li><code>state-refresh</code> on the work cluster: headless <code>claude&nbsp;-p</code> merges <b>cluster-visible evidence</b> (runs, evals, commits) into <b>state.md</b> + <b>research_log.md</b></li>
+      <li>Same pattern at home: <b>situational_awareness.md</b> re-synthesized hourly from journal · tasks · calendar · git</li>
+      <li>Sessions <b>read state instead of re-deriving it</b>: the doc is the handoff between yesterday's agent and today's</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 10 · SESSIONS SAVED ============ -->
+<section class="slide" data-sid="sessions-saved">
+  <span class="chip">when a session ends</span>
+  <div class="content">
+    <h1>No conversation is ever lost.</h1>
+    <div class="cols">
+      <div class="col">
+        <ul class="points" style="font-size:20px">
+          <li>A Stop hook saves <b>every session</b> to the vault, plus a one-line index</li>
+          <li>Sessions <b>sync across machines</b> with the vault: the ○ rows in the picker are another machine's, resumable as handoffs</li>
+          <li><code>claude-resume</code> reopens any of them, any day, on <b>any machine</b></li>
+        </ul>
+      </div>
+      <div class="col">
+        <pre style="font-size:13px; line-height:1.55; padding:14px 18px"><code><span class="c">Select conversation  (↑↓ arrows, Enter, q=quit)
+● local (exact resume)   ○ remote (handoff)</span>
+
+<span class="a">● 2026-09-18  deck-rewrite</span>
+● 2026-09-18  [vault] file today's loose notes
+○ 2026-09-17  thesis-ch3               <span class="c">← laptop</span>
+● 2026-09-17  vault-doctor-fix
+○ 2026-09-16  [vault] draft the setup note
+● 2026-09-15  reading-group-notes</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 · LEARNS TASTE ============ -->
+<section class="slide" data-sid="taste">
+  <span class="chip">over time</span>
+  <div class="content">
+    <h1>It learns my taste from my corrections.</h1>
+    <div style="font-size:22px; line-height:1.5; max-width:44em">
+      <p>I correct a session once: <b>"stop adding fallbacks"</b></p>
+      <p class="mono" style="color:var(--amber); font-size:17px; margin:12px 0 12px 4px">↓ &nbsp;refine-prefs, on session end</p>
+      <p><b>coding_prefs.md</b><span style="color:var(--mut); font-size:19px">: ~700 lines of accumulated taste</span></p>
+      <p class="mono" style="color:var(--amber); font-size:17px; margin:12px 0 12px 4px">↓</p>
+      <p>every future session and <b>every PR review</b> obeys it</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12 · SELF-REPAIR ============ -->
+<section class="slide" data-sid="self-repair">
+  <span class="chip">08:00 tomorrow</span>
+  <div class="content">
+    <h1>It tests and repairs itself.</h1>
+    <div class="cols">
+      <div class="col">
+        <ul class="points" style="font-size:20px">
+          <li>Daily pytest over the agent source, and scripts deploy <b>only on green</b></li>
+          <li>On red: Claude auto-fix, <b>2 attempts max</b>, then Slack with the repro command <code>pytest .vault/tests -x</code></li>
+          <li>5 straight failures → <b>circuit breaker</b> blocks the job until fixed</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="slack">
+          <div class="av" style="background:#D97757; display:flex; align-items:center; justify-content:center">
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-label="Claude"><g fill="#fff"><rect x="10.9" y="3" width="2.2" height="18" rx="1.1"/><rect x="10.9" y="3" width="2.2" height="18" rx="1.1" transform="rotate(45 12 12)"/><rect x="10.9" y="3" width="2.2" height="18" rx="1.1" transform="rotate(90 12 12)"/><rect x="10.9" y="3" width="2.2" height="18" rx="1.1" transform="rotate(135 12 12)"/></g></svg>
+          </div>
+          <div>
+            <div class="who">vault-bot <span>08:00</span></div>
+            <div class="msg">vault tests:<br>
+            <span class="mono" style="font-size:12px">=========== <b>275 passed</b> in 1.29s ===========</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12b · COST ============ -->
+<section class="slide" data-sid="cost">
+  <span class="chip">accounting</span>
+  <div class="content">
+    <h1>What it costs, tracked per agent.</h1>
+    <ul class="points">
+      <li><b>token_tracker</b> wraps every <code>claude&nbsp;-p</code> call with a tag, so real token counts land in <code>token_usage.jsonl</code></li>
+      <li><code>vault-tokens</code> breaks spend down hourly · daily · all-time; <b>token_monitor</b> alerts when a day or a session crosses a threshold</li>
+      <li>Interactive sessions ride the <b>Max subscriptions</b>, and with the account rotation that side is a flat cost</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 13 · THREE TRICKS ============ -->
+<section class="slide" data-sid="tricks">
+  <p class="tag">why it stays boring</p>
+  <div class="content">
+    <h1>What actually keeps it working.</h1>
+    <div class="rows" style="max-width:58em">
+      <div class="row"><span class="k">*.md merge=union</span><span class="v">two machines edit the same note → git keeps <b>both lines</b> instead of conflicting</span></div>
+      <div class="row"><span class="k">.is_primary</span><span class="v">every machine syncs, <b>exactly one sends</b>: the whole guard is <code>[[ -f ~/.vault/.is_primary ]] || exit 0</code></span></div>
+      <div class="row"><span class="k">crontab.yaml</span><span class="v">cron is <b>generated and diffed</b>, never hand-edited: <code>deploy_crontab.py --install</code></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13b · COMMENT LOOP ============ -->
+<section class="slide" data-sid="comment-loop">
+  <span class="chip">meta</span>
+  <div class="content">
+    <h1>This deck edited itself this morning.</h1>
+    <div class="rows" style="max-width:56em">
+      <div class="row" style="grid-template-columns:44px 1fr"><span class="k">1</span><span class="v"><b>shift+click</b> anywhere on a slide → a pin + comment (text or pasted image) lands in a JSON file next to the deck</span></div>
+      <div class="row" style="grid-template-columns:44px 1fr"><span class="k">2</span><span class="v">a file-watcher <b>wakes a Claude session</b>: it makes the edit, replies on the pin, the page auto-reloads</span></div>
+      <div class="row" style="grid-template-columns:44px 1fr"><span class="k">3</span><span class="v">works for <b>any locally-served page</b>: a ~100-line server + a tunnel + a watcher</span></div>
+    </div>
+    <p class="sub" style="margin-top:22px; font-size:18px">These slides went through <b>24 pins</b> this morning, each one a round trip of exactly this loop.</p>
+  </div>
+</section>
+
+<!-- ============ 14 · ADOPT ============ -->
+<section class="slide" data-sid="adopt">
+  <p class="tag">adopt it</p>
+  <div class="content">
+    <h1>Start now.</h1>
+    <div class="rows" style="max-width:58em">
+      <div class="row"><span class="k">get the kit</span><span class="v">paste <b>one line</b> into Claude Code (<a href="start.html">setup page</a>): it looks at your machine, asks how you work, proposes a shaped setup (Seed / Scholar / Operator), installs only that, walks you through one loop · or <a href="starter.tar.gz">starter.tar.gz</a> → <code>./setup.sh</code></span></div>
+      <div class="row"><span class="k">you get</span><span class="v">vault repo + <code>merge=union</code> · 5-min sync · session save + RECENT index · daily-note hook · <code>kssh</code> · cron-from-template</span></div>
+      <div class="row"><span class="k">not included</span><span class="v">my preferences and personal pipelines, <b>yours to shape</b>; digest bot &amp; friends on request (the Slack slide was the hard part)</span></div>
+      <div class="row"><span class="k">or just ask</span><span class="v">nothing to read first: open Claude Code, paste the <a href="PROMPT.md">prompt</a> link, and <b>say what you want</b>. It helps you through the setup and <b>suggests bells &amp; whistles</b> from <a href="extras/">extras/</a> that fit how you work</span></div>
+    </div>
+    <p class="sub" style="margin-top:26px">Step-by-step instructions: <a href="start.html">the setup site</a>.</p>
+  </div>
+</section>
+
+</div>
+
+<script>
+(()=> {
+  const stage=document.getElementById('stage');
+  const progress=document.getElementById('progress');
+  const slides=[...document.querySelectorAll('.slide')];
+  let cur=0;
+
+  slides.forEach((s,i)=>{
+    const n=document.createElement('div'); n.className='pageno'; n.textContent=(i+1)+' / '+slides.length; s.appendChild(n);
+    if(i>0){const f=document.createElement('div'); f.className='foot'; f.textContent='how i automated my workflow · j. collins'; s.appendChild(f);}
+  });
+  function fit(){
+    const sc=Math.min(innerWidth/1280, innerHeight/720);
+    stage.style.transform='translate(-50%,-50%) scale('+sc+')';
+  }
+  function show(i){
+    cur=Math.max(0,Math.min(slides.length-1,i));
+    slides.forEach((s,j)=>s.classList.toggle('active',j===cur));
+    progress.style.width=((cur)/(slides.length-1)*100)+'%';
+    history.replaceState(null,'','#'+(cur+1));
+  }
+  addEventListener('resize',()=>{fit(); if(document.body.classList.contains('overview')) scaleThumbs();});
+  function scaleThumbs(){
+    document.querySelectorAll('#grid .thumb').forEach(t=>{
+      const w=t.clientWidth;
+      t.style.height=(w*720/1280)+'px';
+      t.querySelector('.mini').style.transform='scale('+(w/1280)+')';
+    });
+  }
+  addEventListener('keydown',e=>{
+    if(e.target.tagName==='TEXTAREA') return;
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown') show(cur+1);
+    else if(e.key==='ArrowLeft'||e.key==='PageUp') show(cur-1);
+    else if(e.key==='Home') show(0);
+    else if(e.key==='End') show(slides.length-1);
+    else if(e.key==='f'){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }
+    else if(e.key==='p'){ window.print(); }
+    else if(e.key==='o'||e.key==='Escape'){ toggleOverview(); }
+  });
+  // overview
+  const grid=document.getElementById('grid');
+  let built=false;
+  function toggleOverview(){
+    if(!built){
+      slides.forEach((s,i)=>{
+        const t=document.createElement('div'); t.className='thumb';
+        const m=document.createElement('div'); m.className='mini';
+        const c=s.cloneNode(true); c.classList.add('active');
+        m.appendChild(c); t.appendChild(m);
+        const tn=document.createElement('span'); tn.className='tn'; tn.textContent=i+1; t.appendChild(tn);
+        t.addEventListener('click',()=>{toggleOverview(); show(i);});
+        grid.appendChild(t);
+      });
+      built=true;
+    }
+    document.body.classList.toggle('overview');
+    if(document.body.classList.contains('overview')) requestAnimationFrame(scaleThumbs);
+  }
+  const h=parseInt((location.hash||'').slice(1),10);
+  fit(); show(isNaN(h)?0:h-1);
+})();
+</script>
+</body>
+</html>

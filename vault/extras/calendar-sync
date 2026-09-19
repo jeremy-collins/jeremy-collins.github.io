@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+"""calendar-sync — next 14 days of your calendar → vault/Calendar.md.
+
+usage: calendar-sync
+
+Fetches a private iCal feed and writes a markdown table other agents (and
+you) can read. Config — ~/.vault/calendar.env must define ICAL_URL=...
+(Google Calendar: Settings → your calendar → "Secret address in iCal
+format"). Limitation: recurring events appear at their first occurrence
+only (no RRULE expansion). Typical cron: hourly.
+"""
+import datetime
+import os
+import sys
+import urllib.request
+
+VAULT = os.path.expanduser(os.environ.get("VAULT_DIR", "~/vault"))
+
+env_file = os.path.expanduser("~/.vault/calendar.env")
+if not os.path.isfile(env_file):
+    sys.exit(f"calendar-sync: {env_file} missing (ICAL_URL=...)")
+url = None
+with open(env_file) as f:
+    for line in f:
+        if line.startswith("ICAL_URL="):
+            url = line.split("=", 1)[1].strip()
+if not url:
+    sys.exit(f"calendar-sync: ICAL_URL not set in {env_file}")
+
+with urllib.request.urlopen(url, timeout=30) as r:
+    raw = r.read().decode("utf-8", errors="replace")
+
+# unfold RFC 5545 continuation lines, then parse VEVENT blocks
+lines, unfolded = raw.splitlines(), []
+for l in lines:
+    if l[:1] in (" ", "\t") and unfolded:
+        unfolded[-1] += l[1:]
+    else:
+        unfolded.append(l)
+
+events, cur = [], None
+for l in unfolded:
+    if l.startswith("BEGIN:VEVENT"):
+        cur = {}
+    elif l.startswith("END:VEVENT") and cur is not None:
+        if "start" in cur and "summary" in cur:
+            events.append(cur)
+        cur = None
+    elif cur is not None:
+        if l.startswith("DTSTART"):
+            field, _, val = l.partition(":")
+            digits = val.strip().replace("T", "").rstrip("Z")
+            if len(digits) >= 12:
+                dt = datetime.datetime.strptime(digits[:12], "%Y%m%d%H%M")
+                if val.strip().endswith("Z"):
+                    dt = dt.replace(tzinfo=datetime.timezone.utc).astimezone().replace(tzinfo=None)
+                cur["start"], cur["all_day"] = dt, False
+            else:
+                cur["start"] = datetime.datetime.strptime(digits[:8], "%Y%m%d")
+                cur["all_day"] = True
+        elif l.startswith("SUMMARY"):
+            cur["summary"] = l.partition(":")[2].strip()
+
+now = datetime.datetime.now()
+horizon = now + datetime.timedelta(days=14)
+upcoming = sorted(
+    (e for e in events if now - datetime.timedelta(days=1) <= e["start"] <= horizon),
+    key=lambda e: e["start"],
+)
+
+out = os.path.join(VAULT, "Calendar.md")
+with open(out, "w") as f:
+    f.write(f"# Calendar (next 14 days)\n\nsynced {now.strftime('%Y-%m-%d %H:%M')} "
+            "by calendar-sync — do not hand-edit\n\n")
+    for e in upcoming:
+        when = e["start"].strftime("%a %Y-%m-%d") if e["all_day"] \
+            else e["start"].strftime("%a %Y-%m-%d %H:%M")
+        f.write(f"- {when} — {e['summary']}\n")
+    if not upcoming:
+        f.write("(no events in the next 14 days)\n")
+print(f"{len(upcoming)} events → {out}")

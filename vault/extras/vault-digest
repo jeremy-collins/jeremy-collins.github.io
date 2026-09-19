@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+"""vault-digest — a 5-line morning summary of your vault's last 24 hours.
+
+usage: vault-digest
+
+Feeds yesterday's commits + the last two daily notes to `claude -p` and
+delivers the digest via `claude-slack send` when ~/.vault/slack.env exists,
+otherwise prints it. Set VAULT_DIR to override ~/vault.
+Typical cron: morning, wrapped in vault-run-if-primary.
+"""
+import datetime
+import os
+import subprocess
+import sys
+
+VAULT = os.path.expanduser(os.environ.get("VAULT_DIR", "~/vault"))
+
+has_commits = subprocess.run(
+    ["git", "-C", VAULT, "rev-parse", "HEAD"], capture_output=True
+).returncode == 0
+if has_commits:
+    log = subprocess.run(
+        ["git", "-C", VAULT, "log", "--since=24 hours ago", "--pretty=format:%s"],
+        capture_output=True, text=True, check=True,
+    )
+    commits = log.stdout.strip() or "(no commits in the last 24h)"
+else:
+    commits = "(no commits yet)"
+
+notes = []
+today = datetime.date.today()
+for d in (today - datetime.timedelta(days=1), today):
+    p = os.path.join(VAULT, f"{d}.md")
+    if os.path.isfile(p):
+        with open(p) as f:
+            body = f.read()
+        notes.append(f"## {d}.md\n" + "\n".join(body.splitlines()[-60:]))
+
+prompt = (
+    "Write a morning digest of my note vault's last 24 hours: at most 5 short "
+    "lines, plain text, no headers. Lead with what changed, end with the most "
+    "important open item if one is visible.\n\n"
+    f"Commit subjects (last 24h):\n{commits}\n\n"
+    + ("\n\n".join(notes) if notes else "(no daily notes found)")
+)
+
+r = subprocess.run(["claude", "-p", prompt], capture_output=True, text=True, cwd=VAULT)
+if r.returncode != 0:
+    sys.exit(f"vault-digest: claude -p failed:\n{r.stderr}")
+brief = r.stdout.strip()
+
+if os.path.isfile(os.path.expanduser("~/.vault/slack.env")):
+    subprocess.run(["claude-slack", "send", brief], check=True)
+else:
+    print(brief)

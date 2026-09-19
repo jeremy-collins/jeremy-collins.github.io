@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+"""reminder — time-based reminders that fire to Slack (or stdout).
+
+usage: reminder add "+30m" "stand up"
+       reminder add "14:30" "call back"          (today; tomorrow if past)
+       reminder add "2026-09-01 09:00" "renew"
+       reminder list
+       reminder check                            (cron: every minute)
+
+State: ~/.vault/reminders.jsonl. `check` delivers due reminders via
+`claude-slack send` when ~/.vault/slack.env exists, else prints them.
+Typical cron: `* * * * *`, wrapped in vault-run-if-primary.
+"""
+import datetime
+import json
+import os
+import re
+import subprocess
+import sys
+
+STORE = os.path.expanduser("~/.vault/reminders.jsonl")
+FMT = "%Y-%m-%d %H:%M"
+
+def parse_when(s):
+    now = datetime.datetime.now()
+    m = re.fullmatch(r"\+(\d+)([mhd])", s)
+    if m:
+        n, unit = int(m.group(1)), m.group(2)
+        delta = {"m": "minutes", "h": "hours", "d": "days"}[unit]
+        return now + datetime.timedelta(**{delta: n})
+    m = re.fullmatch(r"(\d{1,2}):(\d{2})", s)
+    if m:
+        due = now.replace(hour=int(m.group(1)), minute=int(m.group(2)),
+                          second=0, microsecond=0)
+        return due if due > now else due + datetime.timedelta(days=1)
+    try:
+        return datetime.datetime.strptime(s, FMT)
+    except ValueError:
+        sys.exit(f'reminder: cannot parse {s!r} — use "+30m", "14:30", or "{FMT}"')
+
+def load():
+    if not os.path.isfile(STORE):
+        return []
+    with open(STORE) as f:
+        return [json.loads(l) for l in f if l.strip()]
+
+def save(items):
+    os.makedirs(os.path.dirname(STORE), exist_ok=True)
+    tmp = STORE + ".tmp"
+    with open(tmp, "w") as f:
+        for it in items:
+            f.write(json.dumps(it) + "\n")
+    os.replace(tmp, STORE)
+
+if len(sys.argv) < 2 or sys.argv[1] not in ("add", "list", "check"):
+    sys.exit(__doc__.strip())
+cmd = sys.argv[1]
+
+if cmd == "add":
+    if len(sys.argv) != 4:
+        sys.exit('usage: reminder add "<when>" "<message>"')
+    due = parse_when(sys.argv[2])
+    items = load()
+    items.append({"due": due.strftime(FMT), "msg": sys.argv[3], "fired": False})
+    save(items)
+    print(f"reminder set for {due.strftime(FMT)}: {sys.argv[3]}")
+
+elif cmd == "list":
+    for it in load():
+        if not it["fired"]:
+            print(f"{it['due']}  {it['msg']}")
+
+elif cmd == "check":
+    now = datetime.datetime.now()
+    items = load()
+    slack = os.path.isfile(os.path.expanduser("~/.vault/slack.env"))
+    changed = False
+    for it in items:
+        if it["fired"] or datetime.datetime.strptime(it["due"], FMT) > now:
+            continue
+        text = f"reminder: {it['msg']} (set for {it['due']})"
+        if slack:
+            subprocess.run(["claude-slack", "send", text], check=True)
+        else:
+            print(text)
+        it["fired"] = True
+        changed = True
+    if changed:
+        save(items)

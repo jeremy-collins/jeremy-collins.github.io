@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+"""task-nagger — DM one ranked nudge from your open tasks.
+
+usage: task-nagger
+
+Reads unchecked `- [ ]` lines from vault/Tasks.md, asks `claude -p` to pick
+the single most important one (avoiding yesterday's pick unless it clearly
+still wins), and delivers a one-line nudge via `claude-slack send` when
+~/.vault/slack.env exists, otherwise prints it.
+Typical cron: 9am / 2pm / 7pm, wrapped in vault-run-if-primary.
+"""
+import json
+import os
+import subprocess
+import sys
+
+VAULT = os.path.expanduser(os.environ.get("VAULT_DIR", "~/vault"))
+STATE = os.path.expanduser("~/.vault/task_nagger_state.json")
+
+tasks_path = os.path.join(VAULT, "Tasks.md")
+if not os.path.isfile(tasks_path):
+    sys.exit(0)
+with open(tasks_path) as f:
+    open_tasks = [l.strip()[6:] for l in f if l.strip().startswith("- [ ]")]
+if not open_tasks:
+    sys.exit(0)
+
+last = json.load(open(STATE))["last"] if os.path.isfile(STATE) else ""
+
+prompt = (
+    "Open tasks:\n" + "\n".join(f"- {t}" for t in open_tasks)
+    + (f"\n\nLast nudge was about: {last!r} — pick something else unless it "
+       "is clearly still the top priority." if last else "")
+    + "\n\nPick the ONE task to do next and reply with a single short nudge "
+    "line naming it. No preamble."
+)
+r = subprocess.run(["claude", "-p", prompt], capture_output=True, text=True, cwd=VAULT)
+if r.returncode != 0:
+    sys.exit(f"task-nagger: claude -p failed:\n{r.stderr}")
+nudge = r.stdout.strip()
+
+os.makedirs(os.path.dirname(STATE), exist_ok=True)
+with open(STATE, "w") as f:
+    json.dump({"last": nudge}, f)
+
+if os.path.isfile(os.path.expanduser("~/.vault/slack.env")):
+    subprocess.run(["claude-slack", "send", nudge], check=True)
+else:
+    print(nudge)

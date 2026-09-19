@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+"""journal-prompt — an evening journal question built from your actual day.
+
+usage: journal-prompt
+
+Feeds today's daily note, today's commit subjects, and Calendar.md (if
+calendar-sync is installed) to `claude -p` for one specific, non-generic
+journal question. Delivered via `claude-slack send` when ~/.vault/slack.env
+exists, otherwise printed.
+Typical cron: 11:55pm, wrapped in vault-run-if-primary.
+"""
+import datetime
+import os
+import subprocess
+import sys
+
+VAULT = os.path.expanduser(os.environ.get("VAULT_DIR", "~/vault"))
+
+ctx = []
+note = os.path.join(VAULT, f"{datetime.date.today()}.md")
+if os.path.isfile(note):
+    with open(note) as f:
+        ctx.append("Today's note:\n" + "\n".join(f.read().splitlines()[-60:]))
+
+if subprocess.run(["git", "-C", VAULT, "rev-parse", "HEAD"],
+                  capture_output=True).returncode == 0:
+    log = subprocess.run(
+        ["git", "-C", VAULT, "log", "--since=18 hours ago", "--pretty=format:%s"],
+        capture_output=True, text=True, check=True,
+    ).stdout.strip()
+    if log:
+        ctx.append("Today's commits:\n" + log)
+
+cal = os.path.join(VAULT, "Calendar.md")
+if os.path.isfile(cal):
+    with open(cal) as f:
+        ctx.append("Calendar:\n" + "\n".join(f.read().splitlines()[:20]))
+
+prompt = (
+    "Write ONE short journal question for the end of my day — specific to "
+    "what actually happened below, not generic. Just the question.\n\n"
+    + ("\n\n".join(ctx) if ctx else "(no activity recorded today)")
+)
+r = subprocess.run(["claude", "-p", prompt], capture_output=True, text=True, cwd=VAULT)
+if r.returncode != 0:
+    sys.exit(f"journal-prompt: claude -p failed:\n{r.stderr}")
+q = r.stdout.strip()
+
+if os.path.isfile(os.path.expanduser("~/.vault/slack.env")):
+    subprocess.run(["claude-slack", "send", q], check=True)
+else:
+    print(q)
