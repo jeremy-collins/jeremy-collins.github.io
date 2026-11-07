@@ -1,0 +1,560 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//CoRL 2026 socials list//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:CoRL 2026 socials
+X-WR-TIMEZONE:America/Chicago
+BEGIN:VEVENT
+UID:u6rr5lql@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261109T230000Z
+DTEND:20261110T010000Z
+SUMMARY:Rooftop Happy Hour: Physical AI Data & Sim Infra w/Midcentury and A
+ I Circle
+LOCATION:Rooftop\, Congress Ave district
+DESCRIPTION:Hosts: AI Circle\, Midcentury\nAccess: approval\nRSVP: https://
+ luma.com/u6rr5lql\nPhysical AI data and sim infra crowd
+URL:https://luma.com/u6rr5lql
+END:VEVENT
+BEGIN:VEVENT
+UID:6ua2bbzf@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261110T000000Z
+DTEND:20261110T020000Z
+SUMMARY:Gento Robotics Happy Hour - CoRL 2026
+LOCATION:Rooftop\, Congress Ave district (on approval)
+DESCRIPTION:Hosts: Gento Robotics\nAccess: approval\nRSVP: https://luma.com
+ /6ua2bbzf\nDrinks and food\, no panels
+URL:https://luma.com/6ua2bbzf
+END:VEVENT
+BEGIN:VEVENT
+UID:wq7neni9@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261110T000000Z
+DTEND:20261110T030000Z
+SUMMARY:Shuffle Into the Real World - Maxinsights @CoRL2026 Panel & Mixer
+LOCATION:Electric Shuffle\, 91 Red River St #102
+DESCRIPTION:Hosts: Maxinsights\, RoboForce\nAccess: approval\nRSVP: https:/
+ /luma.com/wq7neni9\nPanel then shuffleboard\, drinks and bites
+URL:https://luma.com/wq7neni9
+END:VEVENT
+BEGIN:VEVENT
+UID:official-welcome-dinner@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261110T010000Z
+DTEND:20261110T040000Z
+SUMMARY:CoRL 2026 welcome social dinner
+LOCATION:Long Center\, 701 W Riverside Dr
+DESCRIPTION:Hosts: CoRL 2026\nAccess: conference badge\nSource: https://www
+ .corl.org/attending/venue-information\nFood trucks\, robot demos\, line da
+ ncers\; shuttles from 6:30 PM\nTime unconfirmed
+URL:https://www.corl.org/attending/venue-information
+END:VEVENT
+BEGIN:VEVENT
+UID:y04u3xse@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261110T020000Z
+DTEND:20261110T050000Z
+SUMMARY:CoRL After-Hours in a Museum of Oddities
+LOCATION:Oddities museum\, Sixth St district (on approval)
+DESCRIPTION:Hosts: Orbifold AI\, Fusion Fund\, Bison Ventures\nAccess: appr
+ oval\nRSVP: https://luma.com/y04u3xse\nOpen bar and food in a museum takeo
+ ver
+URL:https://luma.com/y04u3xse
+END:VEVENT
+BEGIN:VEVENT
+UID:k2yrxiyy@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261110T150000Z
+DTEND:20261110T170000Z
+SUMMARY:Free Breakfast Tacos for CoRL!
+LOCATION:Outside Hilton Austin\, 500 E 4th St
+DESCRIPTION:Hosts: XDOF\nAccess: open RSVP\nRSVP: https://luma.com/k2yrxiyy
+ \nFree breakfast tacos before day 2\; find XDOF in purple
+URL:https://luma.com/k2yrxiyy
+END:VEVENT
+BEGIN:VEVENT
+UID:official-txrobotics-tours@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261110T163000Z
+DTEND:20261110T173000Z
+SUMMARY:Texas Robotics group lab tours (CoRL local tour)
+LOCATION:Texas Robotics\, Anna Hiss Gymnasium\, UT campus\, 2501 Wichita St
+DESCRIPTION:Hosts: Texas Robotics\, UT Austin\nAccess: open RSVP\nRSVP: htt
+ ps://calendly.com/txroboticstours/texas-robotics-group-tour-corl\nFree 45-
+ min lab tour\; more slots Wed 1:15\, Thu 9:30 and 2:00\, Fri 10:00\nTime u
+ nconfirmed
+URL:https://calendly.com/txroboticstours/texas-robotics-group-tour-corl
+END:VEVENT
+BEGIN:VEVENT
+UID:mvvlclte@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261110T173000Z
+DTEND:20261110T200000Z
+SUMMARY:Robots Gotta Eat: Researchers Lunch at CoRL
+LOCATION:Waller Creek district (on approval)
+DESCRIPTION:Hosts: 1943 community\nAccess: approval\nRSVP: https://luma.com
+ /mvvlclte\nSouthern food\; researchers from OpenAI\, GDM\, PI\, NVIDIA
+URL:https://luma.com/mvvlclte
+END:VEVENT
+BEGIN:VEVENT
+UID:bgwo3pms@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261110T180000Z
+DTEND:20261110T200000Z
+SUMMARY:Bots Over BBQ (CoRL Lunch)
+LOCATION:Lamberts\, Second Street district
+DESCRIPTION:Hosts: XDOF\, Emerson Collective\nAccess: approval\nRSVP: https
+ ://luma.com/bgwo3pms\nSlow-smoked BBQ lunch
+URL:https://luma.com/bgwo3pms
+END:VEVENT
+BEGIN:VEVENT
+UID:official-tesla-tour@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261110T180000Z
+DTEND:20261110T200000Z
+SUMMARY:Tesla Gigafactory Texas tour
+LOCATION:Tesla Gigafactory Texas
+DESCRIPTION:Hosts: CoRL 2026\, Tesla\nAccess: approval\nRSVP: https://forms
+ .gle/pp8xn17uAbGUcenX9\nTour\, not a party\; groups of 50 at 12:00 and 15:
+ 00
+URL:https://forms.gle/pp8xn17uAbGUcenX9
+END:VEVENT
+BEGIN:VEVENT
+UID:official-women-allies-lunch@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261110T180000Z
+DTEND:20261110T193000Z
+SUMMARY:Women and Allies Lunch
+LOCATION:Hilton Austin\, 500 E 4th St
+DESCRIPTION:Hosts: CoRL 2026\, sponsored by TRI\nAccess: approval\nRSVP: ht
+ tps://forms.gle/ES3NnWmgJZDVpRJYA\n80 places\, first come\; organizers con
+ firm by email\nTime unconfirmed
+URL:https://forms.gle/ES3NnWmgJZDVpRJYA
+END:VEVENT
+BEGIN:VEVENT
+UID:l8lqxxwb@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261110T180000Z
+DTEND:20261110T200000Z
+SUMMARY:the robotics decade: tasks - corl 2026 founder / researcher lunch
+LOCATION:Rooftop\, Waller Creek district (on approval)
+DESCRIPTION:Hosts: zero state\nAccess: waitlist\nRSVP: https://luma.com/l8l
+ qxxwb\nFounder and researcher lunch on robot tasks\; sold out
+URL:https://luma.com/l8lqxxwb
+END:VEVENT
+BEGIN:VEVENT
+UID:tk7k46uy@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261110T220000Z
+DTEND:20261110T230000Z
+SUMMARY:CoRL 2026 GenRobot Company & Technical Session
+LOCATION:JW Marriott Austin\, 110 E 2nd St
+DESCRIPTION:Hosts: GenRobot\nAccess: approval\nRSVP: https://luma.com/tk7k4
+ 6uy\nOne-hour company and technical talk\, not a party
+URL:https://luma.com/tk7k46uy
+END:VEVENT
+BEGIN:VEVENT
+UID:lead-ai-tinkerers@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T000000Z
+DTEND:20261111T020000Z
+SUMMARY:AI Tinkerers Austin: Build with every Model (unconfirmed)
+LOCATION:Venue TBA
+DESCRIPTION:Hosts: AI Tinkerers Austin\, OpenRouter\nAccess: details TBA\nS
+ ource: https://austin.aitinkerers.org/\nGeneral AI builders meetup\, not C
+ oRL\nTime unconfirmed
+URL:https://austin.aitinkerers.org/
+END:VEVENT
+BEGIN:VEVENT
+UID:wlzko270@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T000000Z
+DTEND:20261111T030000Z
+SUMMARY:CoRL Happy Hour with MoonlakeAI & AGI Bot
+LOCATION:Downtown Austin (on approval)
+DESCRIPTION:Hosts: MoonlakeAI\, AGIBOT\nAccess: approval\nRSVP: https://lum
+ a.com/wlzko270\nDowntown\, address on approval
+URL:https://luma.com/wlzko270
+END:VEVENT
+BEGIN:VEVENT
+UID:548fmnsq@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T000000Z
+DTEND:20261111T020000Z
+SUMMARY:Khosla Ventures x Genesis: Robotics Mixer at CoRL
+LOCATION:Bull & Bowl\, 501 W 6th St #200
+DESCRIPTION:Hosts: Khosla Ventures\, Genesis AI\nAccess: approval\nRSVP: ht
+ tps://luma.com/548fmnsq\nBowling\, billiards\, mechanical bull
+URL:https://luma.com/548fmnsq
+END:VEVENT
+BEGIN:VEVENT
+UID:wf8vuttw@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T000000Z
+DTEND:20261111T040000Z
+SUMMARY:Reactor x Ultra CORL Happy Hour
+LOCATION:JW Marriott rooftop\, 110 E 2nd St
+DESCRIPTION:Hosts: Reactor\, Ultra Robotics\nAccess: approval\nRSVP: https:
+ //luma.com/wf8vuttw\nNo talks\, world models and real-time AI crowd
+URL:https://luma.com/wf8vuttw
+END:VEVENT
+BEGIN:VEVENT
+UID:fhjn0lmd@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T000000Z
+DTEND:20261111T030000Z
+SUMMARY:Robots On Rainey Street: A Night at CoRL 2026
+LOCATION:Rainey St district (on approval)
+DESCRIPTION:Hosts: Samsung Next\, Radical Ventures\, NVIDIA\, CoreWeave\nAc
+ cess: approval\nRSVP: https://luma.com/fhjn0lmd\nFree food and drinks\, 21
+ +
+URL:https://luma.com/fhjn0lmd
+END:VEVENT
+BEGIN:VEVENT
+UID:scalecorlreception@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T000000Z
+DTEND:20261111T030000Z
+SUMMARY:Scale AI: CoRL Reception
+LOCATION:Arriba Abajo\, Thompson Austin\, 506 San Jacinto Blvd
+DESCRIPTION:Hosts: Scale AI\nAccess: approval\nRSVP: https://luma.com/scale
+ corlreception\nReception\, approval required
+URL:https://luma.com/scalecorlreception
+END:VEVENT
+BEGIN:VEVENT
+UID:x0kxyiv2@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T000000Z
+DTEND:20261111T030000Z
+SUMMARY:🍾 CoRL 2026 Junfan × GenRobot × Saturday Robotics Research Nig
+ ht | Reading Club 38. Austin 11/10
+LOCATION:Likely Hilton Garden Inn Downtown\, 18th floor\, 500 N I-35
+DESCRIPTION:Hosts: Junfan Labs\, GenRobot\, Saturday Robotics\nAccess: open
+  RSVP\nRSVP: https://luma.com/x0kxyiv2\nAsian buffet and research talks\; 
+ the page body says 5:30 to 9:30
+URL:https://luma.com/x0kxyiv2
+END:VEVENT
+BEGIN:VEVENT
+UID:7ihu11na@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T003000Z
+DTEND:20261111T030000Z
+SUMMARY:Bots & Boots 🤖🤠 The Dexmate CoRL Afterparty
+LOCATION:Speakeasy\, 412 Congress Ave
+DESCRIPTION:Hosts: Dexmate\nAccess: approval\nRSVP: https://luma.com/7ihu11
+ na\nFood and drinks\; meet Dexmate's Vega humanoid
+URL:https://luma.com/7ihu11na
+END:VEVENT
+BEGIN:VEVENT
+UID:spxxxrzm@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T003000Z
+DTEND:20261111T020000Z
+SUMMARY:Lute Evening: deploying physical intelligence - CoRL 2026
+LOCATION:East Cesar Chavez (on approval)
+DESCRIPTION:Hosts: Lute\nAccess: waitlist\nRSVP: https://luma.com/spxxxrzm\
+ nSmall team evening on deploying robots
+URL:https://luma.com/spxxxrzm
+END:VEVENT
+BEGIN:VEVENT
+UID:e8ucuj9c@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T003000Z
+DTEND:20261111T023000Z
+SUMMARY:Rhoda AI @ CoRL: Video Models Meet Robotics
+LOCATION:Swift's Attic\, 315 Congress Ave
+DESCRIPTION:Hosts: Rhoda AI\nAccess: invite only\nRSVP: https://luma.com/e8
+ ucuj9c\nPage says invite-only\, RSVP to request\; cocktails and food on Rh
+ oda
+URL:https://luma.com/e8ucuj9c
+END:VEVENT
+BEGIN:VEVENT
+UID:8a0v7jfl@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T003000Z
+DTEND:20261111T033000Z
+SUMMARY:Scaling Physical AI @ CoRL 2026: Sim2Real & Post-Training Afterpart
+ y
+LOCATION:South River City\, south of the river (on approval)
+DESCRIPTION:Hosts: Independent organizers (names on the event page)\nAccess
+ : approval\nRSVP: https://luma.com/8a0v7jfl\nCocktails 6-7 then private di
+ nner\; sim-to-real and post-training
+URL:https://luma.com/8a0v7jfl
+END:VEVENT
+BEGIN:VEVENT
+UID:zskz4acb@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T003000Z
+DTEND:20261111T030000Z
+SUMMARY:The Future of Robot Learning
+LOCATION:Antler VC\, 800 Brazos St #340
+DESCRIPTION:Hosts: PyTorch ATX\, Austin Robotics\nAccess: open RSVP\nRSVP: 
+ https://luma.com/zskz4acb\nRobot learning talks
+URL:https://luma.com/zskz4acb
+END:VEVENT
+BEGIN:VEVENT
+UID:r3gyefn1@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T010000Z
+DTEND:20261111T030000Z
+SUMMARY:Foundry Robotics
+LOCATION:The Dead Rabbit (Sixth St)\, The Dead Rabbit\, Austin\, 204 E 6th 
+ St\, Austin\, TX 78701\, USA
+DESCRIPTION:Hosts: Foundry Robotics\, Khosla Ventures\nAccess: approval\nRS
+ VP: https://luma.com/r3gyefn1\nGet-together\, no panels or pitches
+URL:https://luma.com/r3gyefn1
+END:VEVENT
+BEGIN:VEVENT
+UID:xldm6sep@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T010000Z
+DTEND:20261111T030000Z
+SUMMARY:Gritt Happy Hour @ CoRL 2026
+LOCATION:Congress Ave district\, 3 min walk (on approval)
+DESCRIPTION:Hosts: Gritt AI\nAccess: approval\nRSVP: https://luma.com/xldm6
+ sep\nDrinks and appetizers\; space limited
+URL:https://luma.com/xldm6sep
+END:VEVENT
+BEGIN:VEVENT
+UID:corl2026-event@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T010000Z
+DTEND:20261111T050000Z
+SUMMARY:Live Jazz Night by Abaka AI @ CoRL 2026
+LOCATION:Nica on 4th (a secret jazz bar\, per the host page)
+DESCRIPTION:Hosts: Abaka AI\nAccess: approval\nRSVP: https://luma.com/corl2
+ 026-event\nCocktails and canapes in a jazz bar
+URL:https://luma.com/corl2026-event
+END:VEVENT
+BEGIN:VEVENT
+UID:11e6pchx@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T020000Z
+DTEND:20261111T050000Z
+SUMMARY:Get-together at ReNeu Lab
+LOCATION:ReNeu Robotics Lab\, Anna Hiss Gymnasium (UT Austin)\, Anna Hiss G
+ ymnasium\, 2501 Wichita St\, Austin\, TX 78712\, USA
+DESCRIPTION:Hosts: UT ReNeu Robotics Lab\nAccess: open RSVP\nRSVP: https://
+ luma.com/11e6pchx\nFood\, drinks and robots in action at the UT lab
+URL:https://luma.com/11e6pchx
+END:VEVENT
+BEGIN:VEVENT
+UID:6zvo84pn@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T023000Z
+DTEND:20261111T053000Z
+SUMMARY:CoRL After Dark — hosted by Bedrock Robotics & NVIDIA
+LOCATION:Rainey St district (on approval)
+DESCRIPTION:Hosts: Bedrock Robotics\, NVIDIA\nAccess: approval\nRSVP: https
+ ://luma.com/6zvo84pn\nLate drinks and food\; autonomous excavators team
+URL:https://luma.com/6zvo84pn
+END:VEVENT
+BEGIN:VEVENT
+UID:lead-sieve@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART;VALUE=DATE:20261110
+DTEND;VALUE=DATE:20261111
+SUMMARY:Sieve social (unconfirmed)
+LOCATION:Hestia
+DESCRIPTION:Hosts: Sieve\nAccess: details TBA\nSource: https://www.corl.org
+ /program/socials\nOn the official list\; Sieve X says it hosts "a few even
+ ts"\, DM to join
+URL:https://www.corl.org/program/socials
+END:VEVENT
+BEGIN:VEVENT
+UID:lead-vessl@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART;VALUE=DATE:20261110
+DTEND;VALUE=DATE:20261111
+SUMMARY:VESSL AI social (unconfirmed)
+LOCATION:Edge Rooftop\, JW Marriott\, 110 E 2nd St
+DESCRIPTION:Hosts: VESSL AI\nAccess: details TBA\nSource: https://www.corl.
+ org/program/socials\nOn the official list\; no host page or time found
+URL:https://www.corl.org/program/socials
+END:VEVENT
+BEGIN:VEVENT
+UID:xlwlkfqg@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T133000Z
+DTEND:20261111T143000Z
+SUMMARY:Robotics Community & Coffee Walk - CoRL
+LOCATION:Coffee shop + trail\, Congress Ave district
+DESCRIPTION:Hosts: Sunny Sahota\nAccess: approval\nRSVP: https://luma.com/x
+ lwlkfqg\nCasual morning walk before sessions
+URL:https://luma.com/xlwlkfqg
+END:VEVENT
+BEGIN:VEVENT
+UID:e0ezgakv@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T150000Z
+DTEND:20261111T200000Z
+SUMMARY:Bedrock Robotics: Test Site Field Trip @ CoRL
+LOCATION:Austin-area test site (shuttle)
+DESCRIPTION:Hosts: Bedrock Robotics\nAccess: approval\nRSVP: https://luma.c
+ om/e0ezgakv\nWatch an 80\,000 lb autonomous excavator\; ~25 seats
+URL:https://luma.com/e0ezgakv
+END:VEVENT
+BEGIN:VEVENT
+UID:97z1wrhu@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T180000Z
+DTEND:20261111T200000Z
+SUMMARY:CoRL 2026 Apptronik Humanoid Networking Lunch
+LOCATION:Downtown Austin (on approval)
+DESCRIPTION:Hosts: Apptronik\nAccess: approval\nRSVP: https://luma.com/97z1
+ wrhu\nRecruiting lunch with Apptronik engineers\; address on approval
+URL:https://luma.com/97z1wrhu
+END:VEVENT
+BEGIN:VEVENT
+UID:official-dessert-reception@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T193000Z
+DTEND:20261111T210000Z
+SUMMARY:CoRL 2026 dessert reception
+LOCATION:Bass Concert Hall\, UT campus\, 2350 Robert Dedman Dr
+DESCRIPTION:Hosts: CoRL 2026\, Texas Robotics\nAccess: conference badge\nSo
+ urce: https://www.corl.org/program\nShuttles from downtown\; keynote\, pan
+ el and awards follow\nTime unconfirmed
+URL:https://www.corl.org/program
+END:VEVENT
+BEGIN:VEVENT
+UID:e9menn5c@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T220000Z
+DTEND:20261112T010000Z
+SUMMARY:Physical AI Night
+LOCATION:Rainey St district (on approval)
+DESCRIPTION:Hosts: CRV\, LanceDB\, Orchestral Labs\nAccess: approval\nRSVP:
+  https://luma.com/e9menn5c\nDrinks and shuffleboard\; page hides the date
+URL:https://luma.com/e9menn5c
+END:VEVENT
+BEGIN:VEVENT
+UID:dw26an5o@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261111T233000Z
+DTEND:20261112T023000Z
+SUMMARY:Samsung Robotics: Night at CoRL
+LOCATION:Downtown (on approval)
+DESCRIPTION:Hosts: Samsung Research America\, Samsung Venture America\nAcce
+ ss: waitlist\nRSVP: https://luma.com/dw26an5o\nDrinks and food\; sold out
+URL:https://luma.com/dw26an5o
+END:VEVENT
+BEGIN:VEVENT
+UID:j1oyp8we@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261112T000000Z
+DTEND:20261112T030000Z
+SUMMARY:Beyond The Data Ceiling: Dinner with Zeromatter
+LOCATION:Private upstairs room\, Holly (East Austin)
+DESCRIPTION:Hosts: Zeromatter\nAccess: approval\nRSVP: https://luma.com/j1o
+ yp8we\nCocktails 6-7 then seated dinner on robot data
+URL:https://luma.com/j1oyp8we
+END:VEVENT
+BEGIN:VEVENT
+UID:3du99deo@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261112T000000Z
+DTEND:20261112T030000Z
+SUMMARY:CoRL Happy Hour with Dyna Robotics 🤖
+LOCATION:Sixth St district (on approval)
+DESCRIPTION:Hosts: Dyna Robotics\nAccess: invite only\nRSVP: https://luma.c
+ om/3du99deo\nFounders and researchers\, curated ~100
+URL:https://luma.com/3du99deo
+END:VEVENT
+BEGIN:VEVENT
+UID:research-reception-corl@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261112T000000Z
+DTEND:20261112T030000Z
+SUMMARY:Researcher Reception at CoRL
+LOCATION:Bull and Bowl\, 501 W 6th St #200
+DESCRIPTION:Hosts: NVIDIA\nAccess: approval\nRSVP: https://luma.com/researc
+ h-reception-corl\nFor AI researchers\, waitlist on
+URL:https://luma.com/research-reception-corl
+END:VEVENT
+BEGIN:VEVENT
+UID:torc_corl_2026@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261112T000000Z
+DTEND:20261112T020000Z
+SUMMARY:Torc Happy Hour @ CoRL
+LOCATION:Austin Taco Project\, 500 E 4th St
+DESCRIPTION:Hosts: Torc Robotics\nAccess: approval\nRSVP: https://luma.com/
+ torc_corl_2026\nDrinks and appetizers with TorcDrive researchers\; also at
+  info.torc.ai
+URL:https://luma.com/torc_corl_2026
+END:VEVENT
+BEGIN:VEVENT
+UID:40227vpc@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261112T003000Z
+DTEND:20261112T033000Z
+SUMMARY:Dream Labs - CoRL: Robotics Social
+LOCATION:Speakeasy\, Terrace59 rooftop\, 412 Congress Ave
+DESCRIPTION:Hosts: Dream Labs\nAccess: approval\nRSVP: https://luma.com/402
+ 27vpc\nTacos\, sliders\, drinks on a rooftop
+URL:https://luma.com/40227vpc
+END:VEVENT
+BEGIN:VEVENT
+UID:w88rdxbl@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261112T003000Z
+DTEND:20261112T030000Z
+SUMMARY:Physical AI After Hours · CoRL Edition
+LOCATION:Texas Robotics\, UT campus\, 2501 Wichita St
+DESCRIPTION:Hosts: Circuit Launch\, Axis Connect\nAccess: waitlist\nRSVP: h
+ ttps://luma.com/w88rdxbl\nOne paper\, one robot\, one beer\; sold out
+URL:https://luma.com/w88rdxbl
+END:VEVENT
+BEGIN:VEVENT
+UID:lead-standardbots-gc@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART;VALUE=DATE:20261111
+DTEND;VALUE=DATE:20261112
+SUMMARY:Standard Bots x General Catalyst CoRL happy hour (unconfirmed)
+LOCATION:Venue TBA
+DESCRIPTION:Hosts: Standard Bots\, General Catalyst\nAccess: details TBA\nS
+ ource: https://www.linkedin.com/in/lee-gross/\nPost invites researchers to
+  a GC co-hosted HH on 11/11\; no link\, time or venue
+URL:https://www.linkedin.com/in/lee-gross/
+END:VEVENT
+BEGIN:VEVENT
+UID:lead-xsquare@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART;VALUE=DATE:20261111
+DTEND;VALUE=DATE:20261112
+SUMMARY:X Square Robot Afterparty @CoRL 2026 (unconfirmed)
+LOCATION:Venue TBA
+DESCRIPTION:Hosts: X Square Robot\nAccess: details TBA\nSource: https://www
+ .corl.org/program/socials\nOn the official list\; no RSVP page found
+URL:https://www.corl.org/program/socials
+END:VEVENT
+BEGIN:VEVENT
+UID:meetup-autonomy-in-motion@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART:20261112T220000Z
+DTEND:20261113T010000Z
+SUMMARY:Autonomy in Motion: Drones\, UAV\, USV\, UUV & Beyond (Austin Physi
+ cal AI Meetup)
+LOCATION:Little Woodrow's Domain Northside\, 11420 Rock Rose Ave #130
+DESCRIPTION:Hosts: Texas Physical AI Builders\, Austin-San Antonio Entrepre
+ neurs\nAccess: open RSVP\nRSVP: https://www.meetup.com/founder/events/3166
+ 59496/\nLocal physical-AI happy hour\, not CoRL-branded\; north Austin\, ~
+ 20 min drive
+URL:https://www.meetup.com/founder/events/316659496/
+END:VEVENT
+BEGIN:VEVENT
+UID:lead-agilex@corl-2026-socials
+DTSTAMP:20261107T040217Z
+DTSTART;VALUE=DATE:20261112
+DTEND;VALUE=DATE:20261113
+SUMMARY:AgileX Robotics social (unconfirmed)
+LOCATION:JW Marriott\, Rooms 203-204\, 110 E 2nd St
+DESCRIPTION:Hosts: AgileX Robotics\nAccess: details TBA\nSource: https://ww
+ w.corl.org/program/socials\nOn the official list\, workshop day\; no time 
+ found
+URL:https://www.corl.org/program/socials
+END:VEVENT
+END:VCALENDAR
